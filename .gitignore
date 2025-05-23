@@ -1,0 +1,47 @@
+# Databricks Notebook specific
+.ipynb_checkpoints/
+*.ipynb.py
+*.py.ipynb
+
+# Python specific
+__pycache__/
+*.pyc
+.Python
+build/
+dist/
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# Data files
+*.csv
+*.tsv
+*.txt
+*.parquet
+*.delta
+*.json
+*.avro
+*.xml
+*.xls
+*.xlsx
+*.zip
+*.gz
+*.tar
+*.tmp
+*.log
+/data/ # if you have a local data folder that should not be committed
+
+# MLflow (if tracking locally, not recommended for Databricks native MLflow)
+mlruns/
+
+# IDE specific
+.vscode/
+.idea/
+*.iml
+
+# OS generated files
+.DS_Store
+Thumbs.db
