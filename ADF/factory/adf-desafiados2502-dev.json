@@ -1,0 +1,9 @@
+{
+	"name": "adf-desafiados2502-dev",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "bb6f1077-54d2-423b-9b8c-71dfe5a80af3",
+		"tenantId": "94e2b9e8-3ebf-42cb-a03c-55b76b55974b"
+	}
+}
