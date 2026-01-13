@@ -1,0 +1,15 @@
+{
+	"name": "Database",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AdventureWorks2025",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": []
+	}
+}

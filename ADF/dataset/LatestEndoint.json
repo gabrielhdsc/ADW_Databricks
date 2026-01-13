@@ -1,0 +1,18 @@
+{
+	"name": "LatestEndoint",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CurrencyAPIService",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "API/Currency"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": "latest"
+		},
+		"schema": []
+	}
+}

@@ -1,0 +1,26 @@
+{
+	"name": "HistoricalEndpoint",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CurrencyAPIService",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"orderDate": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "API/Currency"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@concat('historical?date=', dataset().orderDate)",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}

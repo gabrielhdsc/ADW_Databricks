@@ -1,0 +1,26 @@
+{
+	"name": "LatestJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Adlsg2desafiados2502",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "API/Currency"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(\n  'Currency_',\n  formatDateTime(utcnow(), 'MM-dd-yyyy'),\n  '.json'\n)",
+					"type": "Expression"
+				},
+				"folderPath": "api/Currencies",
+				"container": "landingzone"
+			}
+		},
+		"schema": {}
+	}
+}

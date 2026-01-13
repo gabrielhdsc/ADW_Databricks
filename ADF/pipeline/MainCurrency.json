@@ -1,0 +1,96 @@
+{
+	"name": "MainCurrency",
+	"properties": {
+		"activities": [
+			{
+				"name": "LatestOrHistorical",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.executionMode, 'latest')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "ExecuteHistorical",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "HistoricalCurrencies",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "SavingLatestCurrency",
+							"description": "",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 2,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "LatestEndoint",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "LatestJson",
+									"type": "DatasetReference"
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"executionMode": {
+				"type": "string",
+				"defaultValue": "full"
+			}
+		},
+		"folder": {
+			"name": "API/Currency"
+		},
+		"annotations": []
+	}
+}

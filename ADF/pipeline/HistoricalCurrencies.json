@@ -1,0 +1,139 @@
+{
+	"name": "HistoricalCurrencies",
+	"properties": {
+		"activities": [
+			{
+				"name": "QueryOrderDate",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 3,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT DISTINCT\n       CAST(OrderDate AS DATE) AS OrderDate\nFROM Purchasing.PurchaseOrderHeader\nWHERE OrderDate >= '2024-01-01'\nUNION\nSELECT DISTINCT\n       CAST(OrderDate AS DATE) AS OrderDate\nFROM Sales.SalesOrderHeader\nWHERE OrderDate >= '2024-01-01';",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Database",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "SearchingAllDates",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "QueryOrderDate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('QueryOrderDate').output.value",
+						"type": "Expression"
+					},
+					"batchCount": 5,
+					"activities": [
+						{
+							"name": "SavingCurrencies",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "HistoricalEndpoint",
+									"type": "DatasetReference",
+									"parameters": {
+										"orderDate": {
+											"value": "@formatDateTime(item().OrderDate, 'dd-MM-yyyy')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "HistoricalJson",
+									"type": "DatasetReference",
+									"parameters": {
+										"fileDate": {
+											"value": "@formatDateTime(item().OrderDate, 'MM-dd-yyyy')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Wait",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "SavingCurrencies",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 6
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"executionMode": {
+				"type": "string",
+				"defaultValue": "full"
+			}
+		},
+		"folder": {
+			"name": "API/Currency"
+		},
+		"annotations": []
+	}
+}
