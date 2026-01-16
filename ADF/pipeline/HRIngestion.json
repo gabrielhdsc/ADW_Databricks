@@ -1,0 +1,140 @@
+{
+	"name": "HRIngestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "QuerySchema",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT TABLE_SCHEMA, TABLE_NAME\nFROM INFORMATION_SCHEMA.TABLES\nWHERE TABLE_SCHEMA = 'HumanResources'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AdventureWorksTables",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaNameO": "dbo",
+							"TableNameO": "dbo"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "AcessingSchemaTables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "QuerySchema",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('QuerySchema').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "SavingLastestFile",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@if(\n    equals(item().table_name,'Employee' ),\nconcat(\n'SELECT ',\n'BusinessEntityID, ',\n'NationalIDNumber, ',\n'LoginID, ',\n'OrganizationNode.ToString() AS OrganizationNodeString, ',\n'OrganizationLevel, ',\n'JobTitle, ',\n'BirthDate, ',\n'MaritalStatus, ',\n'Gender, ',\n'HireDate, ',\n'VacationHours, ',\n'SickLeaveHours, ',\n'rowguid, ',\n'ModifiedDate ',\n'FROM ', item().table_schema, '.', item().table_name\n),\n\nconcat('SELECT * FROM ', item().table_schema, '.', item().table_name)\n)",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AdventureWorksTables",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaNameO": {
+											"value": "@item().table_schema\n",
+											"type": "Expression"
+										},
+										"TableNameO": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ToBlob",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaNameD": {
+											"value": "@item().table_schema",
+											"type": "Expression"
+										},
+										"TableNameD": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										},
+										"IngestionDate": {
+											"value": "@formatDateTime(utcNow(), 'MM-dd-yyyy')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": []
+	}
+}

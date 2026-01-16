@@ -1,0 +1,15 @@
+{
+	"name": "FelipesWorkspace",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "DatabricksMyWorkspace",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Databricks"
+		},
+		"annotations": [],
+		"type": "AzureDatabricksDeltaLakeDataset",
+		"schema": []
+	}
+}

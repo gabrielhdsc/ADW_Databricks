@@ -1,0 +1,41 @@
+{
+	"name": "ToBlob",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Adlsg2desafiados2502",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SchemaNameD": {
+				"type": "string"
+			},
+			"TableNameD": {
+				"type": "string"
+			},
+			"IngestionDate": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(dataset().TableNameD, '_', dataset().IngestionDate, '.parquet')",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "azuresql/@{dataset().SchemaNameD}/@{dataset().TableNameD}",
+					"type": "Expression"
+				},
+				"container": "landingzone"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	}
+}

@@ -1,0 +1,9 @@
+{
+	"name": "adf-adventure-works-project-pi",
+	"location": "westus2",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "00acfa3c-676f-4494-991c-0b595eb2fa7b",
+		"tenantId": "94e2b9e8-3ebf-42cb-a03c-55b76b55974b"
+	}
+}

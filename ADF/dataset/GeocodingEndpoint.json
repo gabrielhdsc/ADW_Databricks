@@ -1,0 +1,28 @@
+{
+	"name": "GeocodingEndpoint",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "GeocodingAPI",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relative_URL": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "API/Weather/Geocoding"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().relative_URL",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

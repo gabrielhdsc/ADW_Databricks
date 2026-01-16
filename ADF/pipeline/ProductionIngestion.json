@@ -1,0 +1,140 @@
+{
+	"name": "ProductionIngestion",
+	"properties": {
+		"activities": [
+			{
+				"name": "QuerySchema",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT TABLE_SCHEMA, TABLE_NAME\nFROM INFORMATION_SCHEMA.TABLES\nWHERE TABLE_SCHEMA = 'Production'\nAND TABLE_NAME NOT IN ('Document', 'ProductDocument')",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "AdventureWorksTables",
+						"type": "DatasetReference",
+						"parameters": {
+							"SchemaNameO": "dbo",
+							"TableNameO": "dbo"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "AcessinfSchemaTables",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "QuerySchema",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('QuerySchema').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "SavingLastestFile",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AzureSqlSource",
+									"sqlReaderQuery": {
+										"value": "@if(\n    or(\n        equals(item().table_name,'Document'),\n        equals(item().table_name,'ProductDocument')\n    ),\n    '',  \n    concat(\n        'SELECT * FROM ', item().table_schema, '.', item().table_name\n    )\n)\n",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "ParquetSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "ParquetWriteSettings"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AdventureWorksTables",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaNameO": {
+											"value": "@item().table_schema",
+											"type": "Expression"
+										},
+										"TableNameO": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ToBlob",
+									"type": "DatasetReference",
+									"parameters": {
+										"SchemaNameD": {
+											"value": "@item().table_schema",
+											"type": "Expression"
+										},
+										"TableNameD": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										},
+										"IngestionDate": {
+											"value": "@formatDateTime(utcNow(), 'MM-dd-yyyy')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			}
+		],
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": []
+	}
+}

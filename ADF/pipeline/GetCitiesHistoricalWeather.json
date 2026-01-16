@@ -1,0 +1,230 @@
+{
+	"name": "GetCitiesHistoricalWeather",
+	"properties": {
+		"activities": [
+			{
+				"name": "GetCitiesTable",
+				"description": "Felipe's Workspace Cluster must be active before running this Lookup",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureDatabricksDeltaLakeSource",
+						"query": {
+							"value": "SELECT country, name, lat, lon, state FROM adventure_works_catalog.bronze.api_geocoding ORDER BY country, name, state, lat, lon",
+							"type": "Expression"
+						}
+					},
+					"dataset": {
+						"referenceName": "FelipesWorkspace",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEachCity_copy1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "GetCitiesTable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('GetCitiesTable').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "GetMetaData",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "HistoricalWeatherJsonSink",
+									"type": "DatasetReference",
+									"parameters": {
+										"city_name": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"state_name": {
+											"value": "@item().state",
+											"type": "Expression"
+										},
+										"country_code": {
+											"value": "@item().country",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "If Weather History Exists",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "GetMetaData",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@bool(activity('GetMetaData').output.exists)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "GetCityWeather",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "HttpReadSettings",
+													"requestMethod": "GET"
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												}
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "HistoricalWeatherEndpoint",
+												"type": "DatasetReference",
+												"parameters": {
+													"relative_url": {
+														"value": "@concat('v1/archive?latitude=',item().lat,\n'&longitude=',item().lon,     \n'&start_date=2020-01-01&end_date=2025-06-29 daily=temperature_2m_mean,precipitation_sum,rain_sum,snowfall_sum' )",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "HistoricalWeatherJsonSink",
+												"type": "DatasetReference",
+												"parameters": {
+													"city_name": {
+														"value": "@item().city",
+														"type": "Expression"
+													},
+													"state_name": {
+														"value": "@item().state",
+														"type": "Expression"
+													},
+													"country_code": {
+														"value": "@item().country",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Wait1",
+										"type": "Wait",
+										"dependsOn": [
+											{
+												"activity": "GetCityWeather",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "AlreadyExistsLog",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "DebuggingLog",
+											"value": {
+												"value": "@concat('A localização ', item().name,'_',item().state,'_',item().country,' já possui correspondência no Blob Storage.')",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"DebuggingLog": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "API/Weather"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,225 @@
+{
+	"name": "GetCitiesRealCoords",
+	"properties": {
+		"activities": [
+			{
+				"name": "CitiesInfoQuery",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": "SELECT \n    SST.[Group] AS Region,\n    PCR.CountryRegionCode AS CountryCode,\n    PCR.Name AS CountryName,\n    PSP.StateProvinceCode AS StateCode,\n    PSP.Name AS StateName,\n    PA.City AS City\nFROM [AdventureWorks2025].[Person].[Address] AS PA\nINNER JOIN [AdventureWorks2025].[Person].[StateProvince] AS PSP \n    ON PA.StateProvinceID = PSP.StateProvinceID\nINNER JOIN [AdventureWorks2025].[Person].[CountryRegion] AS PCR \n    ON PSP.CountryRegionCode = PCR.CountryRegionCode\nINNER JOIN [AdventureWorks2025].[Sales].[SalesTerritory] AS SST \n    ON PSP.TerritoryID = SST.TerritoryID\nGROUP BY \n    SST.[Group], \n    PCR.CountryRegionCode, \n    PCR.Name, \n    PSP.StateProvinceCode, \n    PSP.Name, \n    PA.City\nORDER BY \n    Region, \n    CountryName, \n    StateName, \n    City;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "Database",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEachCity",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "CitiesInfoQuery",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('CitiesInfoQuery').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "GetFileName",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "GeocodingJsonSink",
+									"type": "DatasetReference",
+									"parameters": {
+										"nome_cidade": "@item().City",
+										"nome_estado": {
+											"value": "@item().StateName",
+											"type": "Expression"
+										},
+										"nome_pais": {
+											"value": "@item().CountryName",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "If Exists",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "GetFileName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@bool(activity('GetFileName').output.exists)",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "GetCityCoord",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "HttpReadSettings",
+													"requestMethod": "GET"
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												}
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "GeocodingEndpoint",
+												"type": "DatasetReference",
+												"parameters": {
+													"relative_URL": {
+														"value": "@concat(\n    'geo/1.0/direct?q=',\n    item().City,',',\n    item().StateCode,',',\n    item().CountryCode,\n    '&appid=90e2ad5f4d5518328507bc389df4279b'\n)",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "GeocodingJsonSink",
+												"type": "DatasetReference",
+												"parameters": {
+													"nome_cidade": {
+														"value": "@item().City",
+														"type": "Expression"
+													},
+													"nome_estado": {
+														"value": "@item().StateName",
+														"type": "Expression"
+													},
+													"nome_pais": {
+														"value": "@item().CountryName",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"name": "Wait",
+										"type": "Wait",
+										"dependsOn": [
+											{
+												"activity": "GetCityCoord",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"userProperties": [],
+										"typeProperties": {
+											"waitTimeInSeconds": 1
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "AlreadyExistsLog",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "DebuggingLog",
+											"value": {
+												"value": "@concat('A cidade ', item().City, ' já possui correspondência no Blob Storage.')",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"DebuggingLog": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "API/Weather"
+		},
+		"annotations": []
+	}
+}

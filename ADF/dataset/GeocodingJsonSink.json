@@ -1,0 +1,36 @@
+{
+	"name": "GeocodingJsonSink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Adlsg2desafiados2502",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"nome_cidade": {
+				"type": "string"
+			},
+			"nome_estado": {
+				"type": "string"
+			},
+			"nome_pais": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "API/Weather/Geocoding"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(\n    dataset().nome_cidade,'_',dataset().nome_estado,'_',dataset().nome_pais,\n    '.json'\n)",
+					"type": "Expression"
+				},
+				"folderPath": "api/Weather/CitiesCoordinates",
+				"container": "landingzone"
+			}
+		}
+	}
+}

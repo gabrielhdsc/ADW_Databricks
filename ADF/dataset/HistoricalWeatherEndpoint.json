@@ -1,0 +1,28 @@
+{
+	"name": "HistoricalWeatherEndpoint",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HistoricalWeatherAPI",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"relative_url": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "API/Weather/HistoricalWeather"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": {
+					"value": "@dataset().relative_url",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

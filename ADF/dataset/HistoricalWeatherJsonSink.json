@@ -1,0 +1,36 @@
+{
+	"name": "HistoricalWeatherJsonSink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Adlsg2desafiados2502",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"city_name": {
+				"type": "string"
+			},
+			"state_name": {
+				"type": "string"
+			},
+			"country_code": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "API/Weather/HistoricalWeather"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@concat(\ndataset().city_name,'_',\ndataset().state_name,'_',\ndataset().country_code,'.json'\n)",
+					"type": "Expression"
+				},
+				"folderPath": "api/Weather/CitiesWeather(Historical)",
+				"container": "landingzone"
+			}
+		}
+	}
+}

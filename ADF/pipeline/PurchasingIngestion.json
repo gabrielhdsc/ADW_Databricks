@@ -1,14 +1,14 @@
 {
-	"name": "HistoricalCurrencies",
+	"name": "PurchasingIngestion",
 	"properties": {
 		"activities": [
 			{
-				"name": "QueryOrderDate",
+				"name": "QuerySchema",
 				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
-					"retry": 3,
+					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -17,12 +17,11 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT DISTINCT\n       CAST(OrderDate AS DATE) AS OrderDate\nFROM Purchasing.PurchaseOrderHeader\nWHERE OrderDate >= '2024-01-01'\nUNION\nSELECT DISTINCT\n       CAST(OrderDate AS DATE) AS OrderDate\nFROM Sales.SalesOrderHeader\nWHERE OrderDate >= '2024-01-01';",
+						"sqlReaderQuery": "SELECT TABLE_SCHEMA, TABLE_NAME\nFROM INFORMATION_SCHEMA.TABLES\nWHERE TABLE_SCHEMA = 'Purchasing'",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
 					"dataset": {
-
 						"referenceName": "AdventureWorksTables",
 						"type": "DatasetReference",
 						"parameters": {
@@ -34,11 +33,11 @@
 				}
 			},
 			{
-				"name": "SearchingAllDates",
+				"name": "AcessingSchemaTables",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "QueryOrderDate",
+						"activity": "QuerySchema",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -47,13 +46,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('QueryOrderDate').output.value",
+						"value": "@activity('QuerySchema').output.value",
 						"type": "Expression"
 					},
-					"batchCount": 5,
 					"activities": [
 						{
-							"name": "SavingCurrencies",
+							"name": "SavingLastestFile",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -66,32 +64,40 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "RestSource",
-									"httpRequestTimeout": "00:01:40",
-									"requestInterval": "00.00:00:00.010",
-									"requestMethod": "GET",
-									"paginationRules": {
-										"supportRFC5988": "true"
-									}
+									"type": "AzureSqlSource",
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
 								},
 								"sink": {
-									"type": "JsonSink",
+									"type": "ParquetSink",
 									"storeSettings": {
 										"type": "AzureBlobStorageWriteSettings"
 									},
 									"formatSettings": {
-										"type": "JsonWriteSettings"
+										"type": "ParquetWriteSettings"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
-									"referenceName": "HistoricalEndpoint",
+									"referenceName": "AdventureWorksTables",
 									"type": "DatasetReference",
 									"parameters": {
-										"orderDate": {
-											"value": "@formatDateTime(item().OrderDate, 'dd-MM-yyyy')",
+										"SchemaNameO": {
+											"value": "@item().table_schema",
+											"type": "Expression"
+										},
+										"TableNameO": {
+											"value": "@item().table_name",
 											"type": "Expression"
 										}
 									}
@@ -99,45 +105,31 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "HistoricalJson",
+									"referenceName": "ToBlob",
 									"type": "DatasetReference",
 									"parameters": {
-										"fileDate": {
-											"value": "@formatDateTime(item().OrderDate, 'MM-dd-yyyy')",
+										"SchemaNameD": {
+											"value": "@item().table_schema",
+											"type": "Expression"
+										},
+										"TableNameD": {
+											"value": "@item().table_name",
+											"type": "Expression"
+										},
+										"IngestionDate": {
+											"value": "@formatDateTime(utcNow(), 'MM-dd-yyyy')",
 											"type": "Expression"
 										}
 									}
 								}
 							]
-						},
-						{
-							"name": "Wait",
-							"type": "Wait",
-							"dependsOn": [
-								{
-									"activity": "SavingCurrencies",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"waitTimeInSeconds": 6
-							}
 						}
 					]
 				}
 			}
 		],
-		"parameters": {
-			"executionMode": {
-				"type": "string",
-				"defaultValue": "full"
-			}
-		},
 		"folder": {
-			"name": "API/Currency"
+			"name": "SQL"
 		},
 		"annotations": []
 	}

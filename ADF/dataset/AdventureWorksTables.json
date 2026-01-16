@@ -1,0 +1,33 @@
+{
+	"name": "AdventureWorksTables",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AdventureWorks2025",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"SchemaNameO": {
+				"type": "string"
+			},
+			"TableNameO": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "SQL"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().SchemaNameO",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().TableNameO",
+				"type": "Expression"
+			}
+		}
+	}
+}
