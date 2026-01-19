@@ -1,0 +1,89 @@
+table clean_person
+	lineageTag: b274983f-cc00-4b68-883d-fa075dd86c8b
+
+	column PersonID
+		dataType: int64
+		formatString: 0
+		lineageTag: 09325ac6-73c7-438e-b6ff-087e70b83da0
+		summarizeBy: none
+		sourceColumn: PersonID
+
+		annotation SummarizationSetBy = Automatic
+
+	column PersonType
+		dataType: string
+		lineageTag: ad6a35b3-02b4-4f1a-86d1-5403634ad6ce
+		summarizeBy: none
+		sourceColumn: PersonType
+
+		annotation SummarizationSetBy = Automatic
+
+	column NameStyle
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 6d067944-9638-4bbc-8913-1230cee4b748
+		summarizeBy: none
+		sourceColumn: NameStyle
+
+		annotation SummarizationSetBy = Automatic
+
+	column Title
+		dataType: string
+		lineageTag: 3592d2b4-c2fc-4e97-b80a-27428d93f14f
+		summarizeBy: none
+		sourceColumn: Title
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstName
+		dataType: string
+		lineageTag: 54dc5c22-fe3e-43e4-9662-0fe1d85674ff
+		summarizeBy: none
+		sourceColumn: FirstName
+
+		annotation SummarizationSetBy = Automatic
+
+	column MiddleName
+		dataType: string
+		lineageTag: 5cd7c8b3-0e2c-4a2f-8531-053f9e5cdd93
+		summarizeBy: none
+		sourceColumn: MiddleName
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastName
+		dataType: string
+		lineageTag: 2db45f62-9323-4e77-8b06-0428a0ce41ba
+		summarizeBy: none
+		sourceColumn: LastName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Suffix
+		dataType: string
+		lineageTag: 9159770a-8ea2-4105-a07b-062b70c130d3
+		summarizeBy: none
+		sourceColumn: Suffix
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmailPromotion
+		dataType: int64
+		formatString: 0
+		lineageTag: 9821bdd0-c576-4dff-a9c7-b85ff5999b1b
+		summarizeBy: none
+		sourceColumn: EmailPromotion
+
+		annotation SummarizationSetBy = Automatic
+
+	partition clean_person = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-3073418945021346.6.azuredatabricks.net", "/sql/1.0/warehouses/ba136deae61fb922", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    clean_person_Table = silver_Schema{[Name="clean_person",Kind="Table"]}[Data]
+				in
+				    clean_person_Table
+

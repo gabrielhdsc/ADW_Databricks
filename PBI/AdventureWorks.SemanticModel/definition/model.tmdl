@@ -1,0 +1,46 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["vwpurchasesforbi","vwsalesforbi","SpatialLocation","dim_product","fact_sales","dim_location","dim_customer","clean_person","clean_product","clean_product_inventory","clean_sales_customer","clean_sales_order_header","clean_sales_order_detail","clean_purchase_order","clean_sales_territory"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DateTableTemplate_c6024867-0242-4014-a0e2-12ac6538c2d4
+ref table vwpurchasesforbi
+ref table vwsalesforbi
+ref table Medidas
+ref table Calendar
+ref table LocalDateTable_856b7685-1933-47d2-a5b5-9abe3428f3fa
+ref table SpatialLocation
+ref table dim_product
+ref table fact_sales
+ref table LocalDateTable_d4c2cfdb-84cc-4098-92d4-0c157e4f640c
+ref table LocalDateTable_3e1999ac-b696-4fb0-b7b2-d1deb093f3b2
+ref table LocalDateTable_2a9484ee-32d9-46e8-817e-1252cdb2b139
+ref table dim_location
+ref table dim_customer
+ref table clean_person
+ref table clean_product
+ref table LocalDateTable_9464b8a6-dc86-42f8-bc0b-4845d1fcd6b6
+ref table LocalDateTable_4c3a2f9d-3398-40e2-bfd4-66aeddd3a570
+ref table clean_product_inventory
+ref table clean_sales_customer
+ref table clean_sales_order_header
+ref table LocalDateTable_e8c1d201-5c77-4df2-b1ed-0585f0060905
+ref table LocalDateTable_cd8c3b0e-dc9b-4896-a6a4-fd057bb781f0
+ref table LocalDateTable_586aa38b-10bb-4989-9e01-30f2537eab37
+ref table clean_sales_order_detail
+ref table clean_purchase_order
+ref table LocalDateTable_2631bebe-74c9-4451-bf88-c369ca0c7292
+ref table LocalDateTable_6842f7b4-4d75-4b9a-928b-766b7651d8a0
+ref table clean_sales_territory
+
+ref cultureInfo pt-BR
+

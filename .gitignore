@@ -45,3 +45,7 @@ mlruns/
 # OS generated files
 .DS_Store
 Thumbs.db
+
+# PBI
+**/.pbi/localSettings.json
+**/.pbi/cache.abf

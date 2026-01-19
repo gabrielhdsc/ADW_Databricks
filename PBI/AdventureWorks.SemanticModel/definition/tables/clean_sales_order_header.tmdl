@@ -1,0 +1,121 @@
+table clean_sales_order_header
+	lineageTag: 891a6215-759e-46e5-b6ae-3404109ad242
+
+	column SalesOrderID
+		dataType: int64
+		formatString: 0
+		lineageTag: c5d0e73b-2ee5-43ef-b9a4-1bcca80cf443
+		summarizeBy: none
+		sourceColumn: SalesOrderID
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: f4d64fa8-f8aa-46ae-86b2-fcbd402a88fe
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		variation Variation
+			isDefault
+			relationship: f6024a3c-612d-46ee-b031-8557bca30858
+			defaultHierarchy: LocalDateTable_e8c1d201-5c77-4df2-b1ed-0585f0060905.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column DueDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 054e5a84-a2bb-4761-aba6-dd4e61227be8
+		summarizeBy: none
+		sourceColumn: DueDate
+
+		variation Variation
+			isDefault
+			relationship: cc4b0e55-eb84-44b4-af2e-3ca0208a93c0
+			defaultHierarchy: LocalDateTable_cd8c3b0e-dc9b-4896-a6a4-fd057bb781f0.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ShipDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 15e74c07-c4b1-4d1f-9cb8-8e69f5a96d9b
+		summarizeBy: none
+		sourceColumn: ShipDate
+
+		variation Variation
+			isDefault
+			relationship: 4504c3bf-c0d8-4c4e-8f26-bb6c0f23ae73
+			defaultHierarchy: LocalDateTable_586aa38b-10bb-4989-9e01-30f2537eab37.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: int64
+		formatString: 0
+		lineageTag: dd2c63ab-ace1-4f63-8d60-3772e2f6e1f4
+		summarizeBy: sum
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: de16185f-c757-4e6d-8ab9-88a373c0083c
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryID
+		dataType: int64
+		formatString: 0
+		lineageTag: 68c70b86-65f6-48c7-8a25-10839d32d8df
+		summarizeBy: none
+		sourceColumn: TerritoryID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CurrencyRateID
+		dataType: int64
+		formatString: 0
+		lineageTag: 413efa95-6bc3-4455-a3e9-55a5f77d9390
+		summarizeBy: count
+		sourceColumn: CurrencyRateID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TaxAmt
+		dataType: double
+		lineageTag: c019fc96-5b66-4c7a-b223-03c1558b3773
+		summarizeBy: sum
+		sourceColumn: TaxAmt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Freight
+		dataType: double
+		lineageTag: 7d639cae-94e9-4617-a339-25d73d4d2b17
+		summarizeBy: sum
+		sourceColumn: Freight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition clean_sales_order_header = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-3073418945021346.6.azuredatabricks.net", "/sql/1.0/warehouses/ba136deae61fb922", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    clean_sales_order_header_Table = silver_Schema{[Name="clean_sales_order_header",Kind="Table"]}[Data]
+				in
+				    clean_sales_order_header_Table
+

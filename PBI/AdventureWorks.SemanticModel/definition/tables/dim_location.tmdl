@@ -1,0 +1,104 @@
+table dim_location
+	lineageTag: 799d8de5-a3a6-4dc4-9bbf-8a6fc662081c
+
+	column AddressID
+		dataType: int64
+		formatString: 0
+		lineageTag: 1eef70f8-ed72-4090-8c5e-8f75da0d6873
+		summarizeBy: count
+		sourceColumn: AddressID
+
+		annotation SummarizationSetBy = Automatic
+
+	column AddressLine1
+		dataType: string
+		lineageTag: 2f461742-cdc3-47ff-a46d-41aa2b2092de
+		summarizeBy: none
+		sourceColumn: AddressLine1
+
+		annotation SummarizationSetBy = Automatic
+
+	column AddressLine2
+		dataType: string
+		lineageTag: 99edc326-7902-48b5-a5d3-decd414c64a2
+		summarizeBy: none
+		sourceColumn: AddressLine2
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: 08cf99e7-f4c7-4329-ac02-00f1eb5f23d9
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column PostalCode
+		dataType: string
+		lineageTag: e2ba931c-2d0d-4bd6-8a66-0e720b599086
+		summarizeBy: none
+		sourceColumn: PostalCode
+
+		annotation SummarizationSetBy = Automatic
+
+	column StateProvinceName
+		dataType: string
+		lineageTag: 71a09f94-79ff-42d0-826f-3e258fc76fea
+		summarizeBy: none
+		sourceColumn: StateProvinceName
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryRegionName
+		dataType: string
+		lineageTag: 0ede42be-61fd-48e7-9616-ce1311ead7fc
+		summarizeBy: none
+		sourceColumn: CountryRegionName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryID
+		dataType: int64
+		formatString: 0
+		lineageTag: baeacedf-025b-49dc-b188-8b20b4d6e287
+		summarizeBy: none
+		sourceColumn: TerritoryID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryName
+		dataType: string
+		lineageTag: 74b7ec72-72ae-4aba-9fa5-ed15f1987297
+		summarizeBy: none
+		sourceColumn: TerritoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryGroup
+		dataType: string
+		lineageTag: 10481fdb-e755-4662-8233-1d681e778201
+		summarizeBy: none
+		sourceColumn: TerritoryGroup
+
+		annotation SummarizationSetBy = Automatic
+
+	column SpatialLocationString
+		dataType: string
+		lineageTag: 6c0e2d19-fae8-41b6-a2cc-cfdfa7250f73
+		summarizeBy: none
+		sourceColumn: SpatialLocationString
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_location = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-3073418945021346.6.azuredatabricks.net", "/sql/1.0/warehouses/ba136deae61fb922", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    dim_location_Table = silver_Schema{[Name="dim_location",Kind="Table"]}[Data]
+				in
+				    dim_location_Table
+

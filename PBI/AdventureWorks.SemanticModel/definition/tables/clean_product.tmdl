@@ -1,0 +1,171 @@
+table clean_product
+	lineageTag: 432b08a1-6648-4c76-b8d7-6e9d09279d53
+
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: 20304fd1-2ba2-462c-905b-a7feeac71270
+		summarizeBy: none
+		sourceColumn: ProductID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductNumber
+		dataType: string
+		lineageTag: 56adb604-264e-4c32-b614-0763e22d581b
+		summarizeBy: none
+		sourceColumn: ProductNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductName
+		dataType: string
+		lineageTag: cac837af-7385-4c71-b019-8308a32ffad3
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Color
+		dataType: string
+		lineageTag: fa86d15c-08fa-464b-8f3f-8699dd8430f5
+		summarizeBy: none
+		sourceColumn: Color
+
+		annotation SummarizationSetBy = Automatic
+
+	column Size
+		dataType: string
+		lineageTag: 158c3eb0-3589-4af2-bbfa-a53cd568475a
+		summarizeBy: none
+		sourceColumn: Size
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weight
+		dataType: double
+		lineageTag: d74a14af-0f82-4945-9e46-1a254de14f1c
+		summarizeBy: sum
+		sourceColumn: Weight
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column StandardCost
+		dataType: double
+		lineageTag: 2dd402cd-a8d7-450d-9cad-606261f76dcc
+		summarizeBy: sum
+		sourceColumn: StandardCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ListPrice
+		dataType: double
+		lineageTag: 1eee11d3-3f0b-4b5d-bb81-99dbd6ab735d
+		summarizeBy: sum
+		sourceColumn: ListPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ProductModelName
+		dataType: string
+		lineageTag: 004019e3-ab99-4b9d-bd4b-af1d99d2f62c
+		summarizeBy: none
+		sourceColumn: ProductModelName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductSubcategoryName
+		dataType: string
+		lineageTag: 92f951f2-b7d2-495e-88b4-865e8afbb0de
+		summarizeBy: none
+		sourceColumn: ProductSubcategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductCategoryName
+		dataType: string
+		lineageTag: 0cd0be77-db97-46d6-94f2-2499c0684410
+		summarizeBy: none
+		sourceColumn: ProductCategoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SizeUnitMeasure
+		dataType: string
+		lineageTag: 6ac211a0-9b12-42ca-815b-24bb4f2ee854
+		summarizeBy: none
+		sourceColumn: SizeUnitMeasure
+
+		annotation SummarizationSetBy = Automatic
+
+	column WeightUnitMeasure
+		dataType: string
+		lineageTag: c610d2a0-0c14-47de-835b-f84c39976f82
+		summarizeBy: none
+		sourceColumn: WeightUnitMeasure
+
+		annotation SummarizationSetBy = Automatic
+
+	column SellStartDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5e45a50d-6390-449f-a830-2558a42d54bd
+		summarizeBy: none
+		sourceColumn: SellStartDate
+
+		variation Variation
+			isDefault
+			relationship: 175dc211-d2ac-48d9-acea-4ea3e76b6961
+			defaultHierarchy: LocalDateTable_9464b8a6-dc86-42f8-bc0b-4845d1fcd6b6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column SellEndDate
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 566efe84-e41a-44ab-838f-25e7d03d2157
+		summarizeBy: none
+		sourceColumn: SellEndDate
+
+		variation Variation
+			isDefault
+			relationship: 4266cfaf-94d9-4643-a647-472b22931c2d
+			defaultHierarchy: LocalDateTable_4c3a2f9d-3398-40e2-bfd4-66aeddd3a570.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column MakeFlag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c61eed50-fde7-43b6-8d95-ea06514cc24d
+		summarizeBy: none
+		sourceColumn: MakeFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	column FinishedGoodsFlag
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 8c570121-5a0f-4085-9e94-95b3b69e3eba
+		summarizeBy: none
+		sourceColumn: FinishedGoodsFlag
+
+		annotation SummarizationSetBy = Automatic
+
+	partition clean_product = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-3073418945021346.6.azuredatabricks.net", "/sql/1.0/warehouses/ba136deae61fb922", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    clean_product_Table = silver_Schema{[Name="clean_product",Kind="Table"]}[Data]
+				in
+				    clean_product_Table
+

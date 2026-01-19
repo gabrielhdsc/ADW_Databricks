@@ -1,0 +1,101 @@
+table dim_product
+	lineageTag: fd5548cf-8c4d-4702-96ca-59774e0e45ea
+
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: ca958189-6612-486b-8175-29d00e5dc8f3
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductNumber
+		dataType: string
+		lineageTag: 072ed2ea-e0e1-4a8c-a5eb-b1602f8b84bb
+		summarizeBy: none
+		sourceColumn: ProductNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProductName
+		dataType: string
+		lineageTag: 873a4279-6c2e-4c5c-8026-181cd1f8fd46
+		summarizeBy: none
+		sourceColumn: ProductName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ModelName
+		dataType: string
+		lineageTag: 23d5c7ec-7288-423e-b8c2-46af209ba2f5
+		summarizeBy: none
+		sourceColumn: ModelName
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubCategory
+		dataType: string
+		lineageTag: b0c4dc68-1a8a-4892-9d98-448751378012
+		summarizeBy: none
+		sourceColumn: SubCategory
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: b0ad9b0a-8648-4db5-8d39-f5115d005b70
+		summarizeBy: none
+		sourceColumn: Category
+
+		annotation SummarizationSetBy = Automatic
+
+	column StandardCost
+		dataType: double
+		lineageTag: 441f7bf5-a381-49e7-9026-2e1ec8b55039
+		summarizeBy: none
+		sourceColumn: StandardCost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ListPrice
+		dataType: double
+		lineageTag: 8eb67de2-d1e1-475e-94f9-de01531cd054
+		summarizeBy: none
+		sourceColumn: ListPrice
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Stock_CurrentQuantity
+		dataType: int64
+		formatString: 0
+		lineageTag: 2b864581-aac4-48ff-ae34-b325c4c8d52b
+		summarizeBy: none
+		sourceColumn: Stock_CurrentQuantity
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalUnitsProduced
+		dataType: int64
+		formatString: 0
+		lineageTag: 283ff638-c0cf-4582-9ba6-6fb42744b7b9
+		summarizeBy: none
+		sourceColumn: TotalUnitsProduced
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_product = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-3073418945021346.6.azuredatabricks.net", "/sql/1.0/warehouses/ba136deae61fb922", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    dim_product_Table = silver_Schema{[Name="dim_product",Kind="Table"]}[Data]
+				in
+				    dim_product_Table
+
