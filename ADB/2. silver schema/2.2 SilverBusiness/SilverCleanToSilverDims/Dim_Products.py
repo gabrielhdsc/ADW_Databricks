@@ -19,13 +19,16 @@ from pyspark.sql import functions as F
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import xxhash64
 from datetime import datetime
+from ADB.Module.GovernanceUtils import audit_registration, get_run_id, silver_selection
 from ADB.Module.SilverUtils import (
     deduplicate_by_rule,
     add_column_comments,
-    write_silver,
+    write_silver
 )
 
 # COMMAND ----------
+
+current_run_id = get_run_id()
 
 # Leitura das tabelas Silver (clean)
 df_customer        = spark.table("adventure_works_catalog.silver.clean_sales_customer")
@@ -45,6 +48,8 @@ df_currency_rate   = spark.table("adventure_works_catalog.silver.clean_sales_cur
 # ============================================================
 # DIM_PRODUCT — SILVER 
 # ============================================================
+start_time = datetime.now()
+
 # Granularidade: 1 linha por produto 
 
 # Criando a tabela
@@ -93,65 +98,124 @@ df_dim_product_base = (
         F.col("StandardCost"),
         F.col("ListPrice")
     )
-
 )
 
-# Garantia de integridade
-df_dim_product_base = deduplicate_by_rule(
-    df_dim_product_base,
-    partition_cols=["ProductID"],
-    order_cols=[
-        F.col("ProductName").isNotNull().desc(),
-        F.col("StandardCost").isNotNull().desc(),
-        F.col("ListPrice").isNotNull().desc()
-    ]
-)
+full_table_name = "adventure_works_catalog.silver.dim_products"
+table_name_short = "dim_products"
 
-# View de origem
-df_dim_product_base.createOrReplaceTempView("src_dim_product")
+try:
+    df_dim_product_base = deduplicate_by_rule(
+        df_dim_product_base,
+        partition_cols=["ProductID"],
+        order_cols=[
+            F.col("ProductName").isNotNull().desc(),
+            F.col("StandardCost").isNotNull().desc(),
+            F.col("ListPrice").isNotNull().desc()
+        ]
+    )
 
-# Merge SCD type 1
-spark.sql("""
-MERGE INTO adventure_works_catalog.silver.dim_product tgt
-USING src_dim_product src
-ON tgt.ProductID = src.ProductID
+    df_dim_product_base.cache()
 
-WHEN MATCHED AND (
-    NOT (tgt.ProductName  <=> src.ProductName) OR
-    NOT (tgt.Category     <=> src.Category) OR
-    NOT (tgt.SubCategory  <=> src.SubCategory) OR
-    NOT (tgt.ModelName    <=> src.ModelName) OR
-    NOT (tgt.StandardCost <=> src.StandardCost) OR
-    NOT (tgt.ListPrice    <=> src.ListPrice)
-)
-THEN UPDATE SET 
-    tgt.ProductName  = src.ProductName,
-    tgt.Category     = src.Category,
-    tgt.SubCategory  = src.SubCategory,
-    tgt.ModelName    = src.ModelName,
-    tgt.StandardCost = src.StandardCost,
-    tgt.ListPrice    = src.ListPrice
+    #Registros processados após as regras e joins (volume transformado)
+    rows_processed = df_dim_product_base.count()
 
-WHEN NOT MATCHED THEN
-  INSERT (
-    ProductID,
-    ProductName,
-    Category,
-    SubCategory,
-    ModelName,
-    StandardCost,
-    ListPrice
-  )
-  VALUES (
-    src.ProductID,
-    src.ProductName,
-    src.Category,
-    src.SubCategory,
-    src.ModelName,
-    src.StandardCost,
-    src.ListPrice
-  )
-""")
+    silver_selection(
+        spark=spark,
+        run_id=current_run_id,
+        df_input=df_dim_product_base,
+        process_name="Criação_dim_table",
+        table_name=table_name_short
+    )
+
+    # Merge SCD type 1
+    df_dim_product_base.createOrReplaceTempView("src_dim_product")
+
+    spark.sql("""
+    MERGE INTO adventure_works_catalog.silver.dim_product tgt
+    USING src_dim_product src
+    ON tgt.ProductID = src.ProductID
+
+    WHEN MATCHED AND (
+        NOT (tgt.ProductName  <=> src.ProductName) OR
+        NOT (tgt.Category     <=> src.Category) OR
+        NOT (tgt.SubCategory  <=> src.SubCategory) OR
+        NOT (tgt.ModelName    <=> src.ModelName) OR
+        NOT (tgt.StandardCost <=> src.StandardCost) OR
+        NOT (tgt.ListPrice    <=> src.ListPrice)
+    )
+    THEN UPDATE SET 
+        tgt.ProductName  = src.ProductName,
+        tgt.Category     = src.Category,
+        tgt.SubCategory  = src.SubCategory,
+        tgt.ModelName    = src.ModelName,
+        tgt.StandardCost = src.StandardCost,
+        tgt.ListPrice    = src.ListPrice
+
+    WHEN NOT MATCHED THEN
+    INSERT (
+        ProductID,
+        ProductName,
+        Category,
+        SubCategory,
+        ModelName,
+        StandardCost,
+        ListPrice
+    )
+    VALUES (
+        src.ProductID,
+        src.ProductName,
+        src.Category,
+        src.SubCategory,
+        src.ModelName,
+        src.StandardCost,
+        src.ListPrice
+    )
+    """)
+
+    #Pegar métricas do merge do DESCRIBE_HISTORY
+    merge_metrics = (
+        spark.sql(f"DESCRIBE HISTORY {full_table_name}")
+        .orderBy(F.col("version").desc())
+        .limit(1)
+        .select("operationMetrics")
+        .collect()[0]["operationMetrics"]
+    )
+
+    rows_written = (
+        int(merge_metrics.get("numTargetRowsInserted", 0))
+        + int(merge_metrics.get("numTargetRowsUpdated", 0))
+    )
+
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        rows_readed_batch = rows_processed,
+        rows_written_batch = rows_written
+    )
+
+    df_dim_product_base.unpersist()
+
+except Exception as e:
+
+    df_dim_product_base.unpersist()
+    
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        status = "FAIL",
+        error_msg = str(e)
+    )
+
+    print(f"Erro em dim_products: {e}")
+
 
 # Documentação das colunas
 dim_product_columns = {

@@ -1,0 +1,128 @@
+table Dim_Calendario
+	lineageTag: 43b15a68-1808-41c0-9beb-4a8a550246cb
+	dataCategory: Time
+
+	column Date
+		formatString: General Date
+		lineageTag: e298be8c-9720-4b68-beda-966a21801376
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DateKey
+		lineageTag: 2123ef21-74ef-42a6-b388-ef574d8c8e52
+		summarizeBy: count
+		isNameInferred
+		sourceColumn: [DateKey]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FullDate
+		isKey
+		formatString: General Date
+		lineageTag: 556ff51c-6d8c-48a7-af1f-f262ffdb970c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [FullDate]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayNumberOfWeek
+		formatString: 0
+		lineageTag: ef065b26-74a0-490c-9f48-ffad69906c70
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [DayNumberOfWeek]
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayNameOfWeek
+		lineageTag: 56692ac4-fd7c-4707-b01e-fa7afc56e19a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [DayNameOfWeek]
+		sortByColumn: DayNumberOfWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayNumberOfMonth
+		formatString: 0
+		lineageTag: 2d1b05c5-c3a6-4083-a362-68c7f814aaec
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [DayNumberOfMonth]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthNumberOfYear
+		formatString: 0
+		lineageTag: b194481b-7389-4a1f-81b0-ab6a7976ea06
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [MonthNumberOfYear]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		lineageTag: 6d9292f0-e88b-4bc6-b6d1-3413b83c9ecb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MonthName]
+		sortByColumn: MonthNumberOfYear
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarQuarter
+		formatString: 0
+		lineageTag: 54144108-65ab-47ad-8fbd-6edc53143b20
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [CalendarQuarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarYear
+		formatString: 0
+		lineageTag: 66e1df5e-d671-49cd-a368-deb6dd9f5a0e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [CalendarYear]
+
+		annotation SummarizationSetBy = Automatic
+
+	column IsWeekend
+		formatString: 0
+		lineageTag: cb7fded9-2d97-4e3e-80ff-d0adbcb1908e
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [IsWeekend]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Dim_Calendario = calculated
+		mode: import
+		source = ```
+				
+				ADDCOLUMNS (
+				    // Define o período: De 1 de Janeiro de 2020 até 31 de Dezembro de 2030
+				    CALENDAR ( DATE(2020, 1, 1), DATE(2030, 12, 31) ),
+				    
+				    "DateKey", VALUE(FORMAT([Date], "YYYYMMDD")),
+				    "FullDate", [Date],
+				    "DayNumberOfWeek", WEEKDAY([Date], 1), // 1 = Domingo, 7 = Sábado
+				    "DayNameOfWeek", FORMAT([Date], "dddd"),
+				    "DayNumberOfMonth", DAY([Date]),
+				    "MonthNumberOfYear", MONTH([Date]),
+				    "MonthName", FORMAT([Date], "MMMM"),
+				    "CalendarQuarter", QUARTER([Date]),
+				    "CalendarYear", YEAR([Date]),
+				    "IsWeekend", IF(WEEKDAY([Date], 2) >= 6, 1, 0) // 2: Seg=1, então Sáb=6 e Dom=7
+				)
+				```
+
+	annotation PBI_Id = 11e2519acc8d4fe199ae39c7133847ad
+

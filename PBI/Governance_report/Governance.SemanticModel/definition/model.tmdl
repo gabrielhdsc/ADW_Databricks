@@ -1,0 +1,22 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["data_lineage","data_quality","adf_logs"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table data_lineage
+ref table data_quality
+ref table adf_logs
+ref table _measures
+ref table Dim_Calendario
+
+ref cultureInfo en-US
+

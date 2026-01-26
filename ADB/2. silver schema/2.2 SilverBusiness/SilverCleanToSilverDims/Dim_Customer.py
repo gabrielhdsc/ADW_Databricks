@@ -19,13 +19,16 @@ from pyspark.sql import functions as F
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import xxhash64
 from datetime import datetime
+from ADB.Module.GovernanceUtils import audit_registration, get_run_id, silver_selection
 from ADB.Module.SilverUtils import (
     deduplicate_by_rule,
     add_column_comments,
-    write_silver,
+    write_silver
 )
 
 # COMMAND ----------
+
+current_run_id = get_run_id()
 
 # Leitura das tabelas Silver (clean)
 df_customer        = spark.table("adventure_works_catalog.silver.clean_sales_customer")
@@ -45,6 +48,8 @@ df_currency_rate   = spark.table("adventure_works_catalog.silver.clean_sales_cur
 # =====================================================
 # DIM_CUSTOMER - SILVER
 # =====================================================
+start_time = datetime.now()
+
 # Granularidade: 1 linha por cliente (pessoa ou loja)
 
 # Criando a tabela
@@ -131,56 +136,117 @@ df_dim_customer_base = (
     .filter(F.col("CustomerID").isNotNull())
 )
 
-df_dim_customer_base = deduplicate_by_rule(
-    df_dim_customer_base,
-    partition_cols=["CustomerID"],
-    order_cols=[
-    F.col("PersonID").isNotNull().desc(),
-    F.col("StoreID").isNotNull().desc()
-]
-)
+full_table_name = "adventure_works_catalog.silver.dim_customer"
+table_name_short = "dim_customer"
 
-# View de origem
-df_dim_customer_base.createOrReplaceTempView("src_dim_customer")
+try:
+    df_dim_customer_base = deduplicate_by_rule(
+        df_dim_customer_base,
+        partition_cols=["CustomerID"],
+        order_cols=[
+            F.col("PersonID").isNotNull().desc(),
+            F.col("StoreID").isNotNull().desc()
+        ]
+    )
 
-# Merge SCD Type 1
-spark.sql("""
-MERGE INTO adventure_works_catalog.silver.dim_customer tgt
-USING src_dim_customer src
-ON tgt.CustomerID = src.CustomerID
+    df_dim_customer_base.cache()
 
-WHEN MATCHED AND (
-    NOT (tgt.PersonID     <=> src.PersonID) OR
-    NOT (tgt.StoreID      <=> src.StoreID) OR
-    NOT (tgt.CustomerType <=> src.CustomerType) OR
-    NOT (tgt.PersonName   <=> src.PersonName) OR
-    NOT (tgt.StoreName    <=> src.StoreName)
-)
-THEN UPDATE SET
-    tgt.PersonID     = src.PersonID,
-    tgt.StoreID      = src.StoreID,
-    tgt.CustomerType = src.CustomerType,
-    tgt.PersonName   = src.PersonName,
-    tgt.StoreName    = src.StoreName
+    #Registros processados após as regras e joins (volume transformado)
+    rows_processed = df_dim_customer_base.count()
 
-WHEN NOT MATCHED THEN
-  INSERT (
-    CustomerID,
-    PersonID,
-    StoreID,
-    CustomerType,
-    PersonName,
-    StoreName
-  )
-  VALUES (
-    src.CustomerID,
-    src.PersonID,
-    src.StoreID,
-    src.CustomerType,
-    src.PersonName,
-    src.StoreName
-  )
-""")
+    silver_selection(
+        spark=spark,
+        run_id=current_run_id,
+        df_input=df_dim_currency_base,
+        process_name="Criação_dim_table",
+        table_name=table_name_short
+    )
+
+    # Merge SCD Type 1
+    df_dim_customer_base.createOrReplaceTempView("src_dim_customer")
+
+    spark.sql("""
+    MERGE INTO adventure_works_catalog.silver.dim_customer tgt
+    USING src_dim_customer src
+    ON tgt.CustomerID = src.CustomerID
+
+    WHEN MATCHED AND (
+        NOT (tgt.PersonID     <=> src.PersonID) OR
+        NOT (tgt.StoreID      <=> src.StoreID) OR
+        NOT (tgt.CustomerType <=> src.CustomerType) OR
+        NOT (tgt.PersonName   <=> src.PersonName) OR
+        NOT (tgt.StoreName    <=> src.StoreName)
+    )
+    THEN UPDATE SET
+        tgt.PersonID     = src.PersonID,
+        tgt.StoreID      = src.StoreID,
+        tgt.CustomerType = src.CustomerType,
+        tgt.PersonName   = src.PersonName,
+        tgt.StoreName    = src.StoreName
+
+    WHEN NOT MATCHED THEN
+    INSERT (
+        CustomerID,
+        PersonID,
+        StoreID,
+        CustomerType,
+        PersonName,
+        StoreName
+    )
+    VALUES (
+        src.CustomerID,
+        src.PersonID,
+        src.StoreID,
+        src.CustomerType,
+        src.PersonName,
+        src.StoreName
+    )
+    """)
+
+    #Pegar métricas do merge do DESCRIBE_HISTORY
+    merge_metrics = (
+        spark.sql(f"DESCRIBE HISTORY {full_table_name}")
+        .orderBy(F.col("version").desc())
+        .limit(1)
+        .select("operationMetrics")
+        .collect()[0]["operationMetrics"]
+    )
+
+    rows_written = (
+        int(merge_metrics.get("numTargetRowsInserted", 0))
+        + int(merge_metrics.get("numTargetRowsUpdated", 0))
+    )
+
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        rows_readed_batch = rows_processed,
+        rows_written_batch = rows_written
+    )
+
+    df_dim_customer_base.unpersist()
+
+except Exception as e:
+
+    df_dim_customer_base.unpersist()
+    
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        status = "FAIL",
+        error_msg = str(e)
+    )
+
+    print(f"Erro em dim_customer: {e}")
+
 
 # Descrição das colunas
 dim_customer_columns = {

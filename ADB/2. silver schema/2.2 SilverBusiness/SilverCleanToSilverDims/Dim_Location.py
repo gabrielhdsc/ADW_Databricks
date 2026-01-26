@@ -19,13 +19,16 @@ from pyspark.sql import functions as F
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import xxhash64
 from datetime import datetime
+from ADB.Module.GovernanceUtils import audit_registration, get_run_id, silver_selection
 from ADB.Module.SilverUtils import (
     deduplicate_by_rule,
     add_column_comments,
-    write_silver,
+    write_silver
 )
 
 # COMMAND ----------
+
+current_run_id = get_run_id()
 
 # Leitura das tabelas Silver (clean)
 df_customer        = spark.table("adventure_works_catalog.silver.clean_sales_customer")
@@ -45,6 +48,8 @@ df_currency_rate   = spark.table("adventure_works_catalog.silver.clean_sales_cur
 # =====================================================
 # DIM_LOCATION - SILVER
 # =====================================================
+start_time = datetime.now()
+
 # Granularidade: 1 linha por AddressID
 
 # Criando a tabela
@@ -104,65 +109,128 @@ df_dim_location_base = (
     .filter(F.col("AddressID").isNotNull())
 )
 
-df_dim_location_base = deduplicate_by_rule(
-    df_dim_location_base,
-    partition_cols=["AddressID"],
-    order_cols=[
-        F.col("AddressLine1").isNotNull().desc(),
-        F.col("City").isNotNull().desc(),
-        F.col("PostalCode").isNotNull().desc()
-    ]
-)
 
-# View de origem
-df_dim_location_base.createOrReplaceTempView("src_dim_location")
+full_table_name = "adventure_works_catalog.silver.dim_location"
+table_name_short = "dim_location"
 
-# Merge SCD Type 1
-spark.sql("""
-MERGE INTO adventure_works_catalog.silver.dim_location tgt
-USING src_dim_location src
-ON tgt.AddressID = src.AddressID
+try:
+    df_dim_location_base = deduplicate_by_rule(
+        df_dim_location_base,
+        partition_cols=["AddressID"],
+        order_cols=[
+            F.col("AddressLine1").isNotNull().desc(),
+            F.col("City").isNotNull().desc(),
+            F.col("PostalCode").isNotNull().desc()
+        ]
+    )
 
-WHEN MATCHED AND (
-    NOT (tgt.AddressLine1       <=> src.AddressLine1) OR
-    NOT (tgt.AddressLine2       <=> src.AddressLine2) OR
-    NOT (tgt.City               <=> src.City) OR
-    NOT (tgt.StateProvinceName  <=> src.StateProvinceName) OR
-    NOT (tgt.CountryName        <=> src.CountryName) OR
-    NOT (tgt.PostalCode         <=> src.PostalCode) OR
-    NOT (tgt.SpatialLocation    <=> src.SpatialLocation)
-)
-THEN UPDATE SET
-    tgt.AddressLine1      = src.AddressLine1,
-    tgt.AddressLine2      = src.AddressLine2,
-    tgt.City              = src.City,
-    tgt.StateProvinceName = src.StateProvinceName,
-    tgt.CountryName       = src.CountryName,
-    tgt.PostalCode        = src.PostalCode,
-    tgt.SpatialLocation   = src.SpatialLocation
+    df_dim_location_base.cache()
 
-WHEN NOT MATCHED THEN
-  INSERT (
-    AddressID,
-    AddressLine1,
-    AddressLine2,
-    City,
-    StateProvinceName,
-    CountryName,
-    PostalCode,
-    SpatialLocation
-  )
-  VALUES (
-    src.AddressID,
-    src.AddressLine1,
-    src.AddressLine2,
-    src.City,
-    src.StateProvinceName,
-    src.CountryName,
-    src.PostalCode,
-    src.SpatialLocation
-  )
-""")
+    #Registros processados após as regras e joins (volume transformado)
+    rows_processed = df_dim_location_base.count()
+
+    silver_selection(
+        spark=spark,
+        run_id=current_run_id,
+        df_input=df_dim_location_base,
+        process_name="Criação_dim_table",
+        table_name=table_name_short
+    )
+
+    # Merge SCD Type 1
+    df_dim_location_base.createOrReplaceTempView("src_dim_location")
+
+    spark.sql("""
+    MERGE INTO adventure_works_catalog.silver.dim_location tgt
+    USING src_dim_location src
+    ON tgt.AddressID = src.AddressID
+
+    WHEN MATCHED AND (
+        NOT (tgt.AddressLine1       <=> src.AddressLine1) OR
+        NOT (tgt.AddressLine2       <=> src.AddressLine2) OR
+        NOT (tgt.City               <=> src.City) OR
+        NOT (tgt.StateProvinceName  <=> src.StateProvinceName) OR
+        NOT (tgt.CountryName        <=> src.CountryName) OR
+        NOT (tgt.PostalCode         <=> src.PostalCode) OR
+        NOT (tgt.SpatialLocation    <=> src.SpatialLocation)
+    )
+    THEN UPDATE SET
+        tgt.AddressLine1      = src.AddressLine1,
+        tgt.AddressLine2      = src.AddressLine2,
+        tgt.City              = src.City,
+        tgt.StateProvinceName = src.StateProvinceName,
+        tgt.CountryName       = src.CountryName,
+        tgt.PostalCode        = src.PostalCode,
+        tgt.SpatialLocation   = src.SpatialLocation
+
+    WHEN NOT MATCHED THEN
+    INSERT (
+        AddressID,
+        AddressLine1,
+        AddressLine2,
+        City,
+        StateProvinceName,
+        CountryName,
+        PostalCode,
+        SpatialLocation
+    )
+    VALUES (
+        src.AddressID,
+        src.AddressLine1,
+        src.AddressLine2,
+        src.City,
+        src.StateProvinceName,
+        src.CountryName,
+        src.PostalCode,
+        src.SpatialLocation
+    )
+    """)
+
+    
+    #Pegar métricas do merge do DESCRIBE_HISTORY
+    merge_metrics = (
+        spark.sql(f"DESCRIBE HISTORY {full_table_name}")
+        .orderBy(F.col("version").desc())
+        .limit(1)
+        .select("operationMetrics")
+        .collect()[0]["operationMetrics"]
+    )
+
+    rows_written = (
+        int(merge_metrics.get("numTargetRowsInserted", 0))
+        + int(merge_metrics.get("numTargetRowsUpdated", 0))
+    )
+
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        rows_readed_batch = rows_processed,
+        rows_written_batch = rows_written
+    )
+
+    df_dim_location_base.unpersist()
+
+except Exception as e:
+
+    df_dim_location_base.unpersist()
+
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        status = "FAIL",
+        error_msg = str(e)
+    )
+
+    print(f"Erro em dim_location: {e}")
+
 
 # Descrição das colunas
 dim_location_columns = {

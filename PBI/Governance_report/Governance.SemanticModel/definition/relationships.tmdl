@@ -1,0 +1,12 @@
+relationship 2a0fb92c-26f8-7e01-4172-8eba81cc735d
+	fromColumn: data_quality.Data_Relacionamento
+	toColumn: Dim_Calendario.FullDate
+
+relationship b0e2dbd9-9f90-b989-aeff-27e1e074465c
+	fromColumn: data_lineage.Data_Relacionamento
+	toColumn: Dim_Calendario.FullDate
+
+relationship 787c49af-b05c-3a23-f75c-94ea26f31898
+	fromColumn: adf_logs.Data_Relacionamento
+	toColumn: Dim_Calendario.FullDate
+

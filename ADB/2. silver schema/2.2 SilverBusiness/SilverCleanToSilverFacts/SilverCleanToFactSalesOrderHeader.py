@@ -11,13 +11,17 @@ sys.path.append("..")
 # COMMAND ----------
 
 # Imports
+from datetime import datetime
 from pyspark.sql import functions as F
+from ADB.Module.GovernanceUtils import audit_registration, get_run_id, silver_selection
 from ADB.Module.SilverUtils import (
     add_column_comments,
-    deduplicate_by_rule,
+    deduplicate_by_rule
 )
 
 # COMMAND ----------
+
+current_run_id = get_run_id()
 
 # Leitura das tabelas Silver
 df_clean_sales_order_header = spark.table("adventure_works_catalog.silver.clean_sales_order_header")
@@ -31,6 +35,8 @@ df_dim_territory = spark.table("adventure_works_catalog.silver.dim_territory")
 
 
 # COMMAND ----------
+
+start_time = datetime.now()
 
 # Criando a tabela
 spark.sql("""
@@ -92,76 +98,135 @@ df_fact_sales_order_base = (
         F.col("sh.TaxAmt")
     )
 )
- 
-df_fact_sales_order_final = deduplicate_by_rule(
-    df_fact_sales_order_base,
-    partition_cols=["OrderID"],
-    order_cols=[
-        F.col("ShipDate_SK").desc(),
-        F.col("OrderDate_SK").desc()
-    ]
-)
 
-# View Temporária
-df_fact_sales_order_final.createOrReplaceTempView("src_fact_sales_order")
- 
-# Merge SCD Type 1
-spark.sql("""
-MERGE INTO adventure_works_catalog.silver.fact_sales_order tgt
-USING src_fact_sales_order src
-ON tgt.OrderID = src.OrderID
- 
-WHEN MATCHED AND (
-       NOT (tgt.Customer_SK      <=> src.Customer_SK)
-    OR NOT (tgt.OrderDate_SK     <=> src.OrderDate_SK)
-    OR NOT (tgt.ShipDate_SK      <=> src.ShipDate_SK)
-    OR NOT (tgt.Currency_SK      <=> src.Currency_SK)
-    OR NOT (tgt.Location_SK      <=> src.Location_SK)
-    OR NOT (tgt.Territory_SK     <=> src.Territory_SK)
-    OR NOT (tgt.SubTotal         <=> src.SubTotal)
-    OR NOT (tgt.ShippingCost     <=> src.ShippingCost)
-    OR NOT (tgt.TaxAmt           <=> src.TaxAmt)
-)
-THEN UPDATE SET
-    tgt.ShipToAddressID = src.ShipToAddressID,
-    tgt.Customer_SK     = src.Customer_SK,
-    tgt.OrderDate_SK    = src.OrderDate_SK,
-    tgt.ShipDate_SK     = src.ShipDate_SK,
-    tgt.Currency_SK     = src.Currency_SK,
-    tgt.Location_SK     = src.Location_SK,
-    tgt.Territory_SK    = src.Territory_SK,
-    tgt.SubTotal        = src.SubTotal,
-    tgt.ShippingCost    = src.ShippingCost,
-    tgt.TaxAmt          = src.TaxAmt
- 
-WHEN NOT MATCHED THEN
-  INSERT (
-    OrderID,
-    ShipToAddressID,
-    Customer_SK,
-    OrderDate_SK,
-    ShipDate_SK,
-    Currency_SK,
-    Location_SK,
-    Territory_SK,
-    SubTotal,
-    ShippingCost,
-    TaxAmt
-  )
-  VALUES (
-    src.OrderID,
-    src.ShipToAddressID,
-    src.Customer_SK,
-    src.OrderDate_SK,
-    src.ShipDate_SK,
-    src.Currency_SK,
-    src.Location_SK,
-    src.Territory_SK,
-    src.SubTotal,
-    src.ShippingCost,
-    src.TaxAmt
-  );
-""")
+full_table_name = "adventure_works_catalog.silver.fact_sales_order"
+table_name_short = "fact_sales_order"
+
+
+try:
+    df_fact_sales_order_final = deduplicate_by_rule(
+        df_fact_sales_order_base,
+        partition_cols=["OrderID"],
+        order_cols=[
+            F.col("ShipDate_SK").desc(),
+            F.col("OrderDate_SK").desc()
+        ]
+    )
+    
+    df_fact_sales_order_final.cache()
+
+    #Registros processados após as regras (volume transformado)
+    rows_processed = df_fact_sales_order_final.count()
+
+    silver_selection(
+        spark=spark,
+        run_id=current_run_id,
+        df_input=df_fact_sales_order_final,
+        process_name="Criação_fact_table",
+        table_name=table_name_short
+    )
+
+    # View Temporária
+    df_fact_sales_order_final.createOrReplaceTempView("src_fact_sales_order")
+
+
+    # Merge SCD Type 1
+    spark.sql("""
+    MERGE INTO adventure_works_catalog.silver.fact_sales_order tgt
+    USING src_fact_sales_order src
+    ON tgt.OrderID = src.OrderID
+    
+    WHEN MATCHED AND (
+        NOT (tgt.Customer_SK      <=> src.Customer_SK)
+        OR NOT (tgt.OrderDate_SK     <=> src.OrderDate_SK)
+        OR NOT (tgt.ShipDate_SK      <=> src.ShipDate_SK)
+        OR NOT (tgt.Currency_SK      <=> src.Currency_SK)
+        OR NOT (tgt.Location_SK      <=> src.Location_SK)
+        OR NOT (tgt.SubTotal         <=> src.SubTotal)
+        OR NOT (tgt.ShippingCost     <=> src.ShippingCost)
+        OR NOT (tgt.TaxAmt           <=> src.TaxAmt)
+    )
+    THEN UPDATE SET
+        tgt.ShipToAddressID = src.ShipToAddressID,
+        tgt.Customer_SK     = src.Customer_SK,
+        tgt.OrderDate_SK    = src.OrderDate_SK,
+        tgt.ShipDate_SK     = src.ShipDate_SK,
+        tgt.Currency_SK     = src.Currency_SK,
+        tgt.Location_SK     = src.Location_SK,
+        tgt.SubTotal        = src.SubTotal,
+        tgt.ShippingCost    = src.ShippingCost,
+        tgt.TaxAmt          = src.TaxAmt
+    
+    WHEN NOT MATCHED THEN
+    INSERT (
+        OrderID,
+        ShipToAddressID,
+        Customer_SK,
+        OrderDate_SK,
+        ShipDate_SK,
+        Currency_SK,
+        Location_SK,
+        SubTotal,
+        ShippingCost,
+        TaxAmt
+    )
+    VALUES (
+        src.OrderID,
+        src.ShipToAddressID,
+        src.Customer_SK,
+        src.OrderDate_SK,
+        src.ShipDate_SK,
+        src.Currency_SK,
+        src.Location_SK,
+        src.SubTotal,
+        src.ShippingCost,
+        src.TaxAmt
+    );
+    """)
+
+    #Pegar métricas do merge do DESCRIBE_HISTORY
+    merge_metrics = (
+        spark.sql(f"DESCRIBE HISTORY {full_table_name}")
+        .orderBy(F.col("version").desc())
+        .limit(1)
+        .select("operationMetrics")
+        .collect()[0]["operationMetrics"]
+    )
+
+    rows_written = (
+        int(merge_metrics.get("numTargetRowsInserted", 0))
+        + int(merge_metrics.get("numTargetRowsUpdated", 0))
+    )
+
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_fact_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        rows_readed_batch = rows_processed,
+        rows_written_batch = rows_written
+    )
+
+    df_fact_sales_order_final.unpersist()
+
+except Exception as e:
+
+    df_fact_sales_order_final.unpersist()
+
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_fact_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        status = "FAIL",
+        error_msg = str(e)
+    )
+
+    print(f"Erro em {table_name_short} {e}")
  
 # Descrição das colunas
 fact_sales_order_columns = {

@@ -5,8 +5,10 @@ sys.path.append("..")
 # COMMAND ----------
 
 # Imports 
+from datetime import datetime
 from pyspark.sql import functions as F
 from pyspark.sql.window import Window
+from ADB.Module.GovernanceUtils import audit_registration, get_run_id, silver_selection
 from ADB.Module.SilverUtils import (
     deduplicate_by_rule,
     add_column_comments,
@@ -14,6 +16,8 @@ from ADB.Module.SilverUtils import (
 )
 
 # COMMAND ----------
+
+current_run_id = get_run_id()
 
 #Leitura das tabelas
 df_vendor                  = spark.table("adventure_works_catalog.bronze.purchasing_vendor")
@@ -225,5 +229,60 @@ silver_tables = [
     (df_clean_purchasing_order, "clean_purchasing_order"),
     (df_clean_purchasing_order_line, "clean_purchasing_order_line"),
 ]
+
 for df, table_name in silver_tables:
-    write_silver(df, table_name)
+    start_time = datetime.now()
+    full_table_name = f"adventure_works_catalog.silver.{table_name}"
+
+    try:
+        #Garante que as ações usem o mesmo dado processado usando menos memoria
+        df.cache()
+
+        #Contagem de registros processados após as regras e joins (volume transformado)
+        rows_processed = df.count()
+
+        #Verificação antes de salvar
+        silver_selection(
+            spark=spark,
+            run_id=current_run_id,
+            df_input=df,
+            process_name="Transferência_Bronze_SilverClean",
+            table_name=table_name
+        )
+
+        write_silver(df, table_name)
+
+        #Le as linhas do estado final da tabela apos transformações
+        rows_written = spark.table(full_table_name).count()
+
+        #Registrar os metadados de auditoria
+        audit_registration(
+            spark=spark,
+            run_id=current_run_id,
+            process_name="Transferência_Bronze_SilverClean",
+            layer="SILVER",
+            table_saved = table_name,
+            start_date = start_time,
+            rows_readed_batch = rows_processed,
+            rows_written_batch = rows_written
+        )
+
+        df.unpersist() #Libera a memória do cache
+
+    
+    except Exception as e:
+
+        df.unpersist() #Libera a memória do cache
+
+        audit_registration(
+            spark=spark,
+            run_id=current_run_id,
+            process_name="Transferência_Bronze_SilverClean",
+            layer="SILVER",
+            table_saved = table_name,
+            start_date = start_time,
+            status="FAIL",
+            error_msg=str(e)
+        )
+
+        print(f"Erro em {table_name}: {e}")

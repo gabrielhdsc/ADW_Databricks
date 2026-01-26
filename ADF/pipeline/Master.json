@@ -6,7 +6,14 @@
 				"name": "Execute SQL",
 				"description": "Run SQL ingestion pipelines of all schemas from dataset",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "ADF_Log_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -89,8 +96,119 @@
 					"secureInput": false
 				},
 				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "Adbdesafiadosdev",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ADF_Log_Start",
+				"description": "Inicia o \"time\" do ADF",
+				"type": "DatabricksNotebook",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
 				"typeProperties": {
-					"jobId": "155157525083421"
+					"baseParameters": {
+						"adf_run_id": "@pipeline().RunId",
+						"pipeline_name": "@pipeline().Pipeline",
+						"trigger_name": "@pipeline().TriggerName",
+						"trigger_time": "@pipeline().TriggerTime",
+						"status": "STARTED"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "Adbdesafiadosdev",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ADF_Log_Sucsess",
+				"description": "Registra o log de \"SUCCESS\" caso o pipeline rode corretamente",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Load Master",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"baseParameters": {
+						" adf_run_id": "@pipeline().RunId",
+						"pipeline_name": "@pipeline().Pipeline",
+						"trigger_name": "@pipeline().TriggerName",
+						"trigger_time": "@pipeline().TriggerTime",
+						"status": "SUCCESS"
+					}
+				},
+				"linkedServiceName": {
+					"referenceName": "Adbdesafiadosdev",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "ADF_Log_Fail",
+				"description": "Registra o log de \"FAIL\" caso o pipeline não rode corretamente",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Load Master",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Execute SQL",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Execute APICurrency",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Execute WeatherAPI",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"baseParameters": {
+						"adf_run_id": "@pipeline().RunId",
+						"pipeline_name": "@pipeline().Pipeline",
+						"trigger_name": "@pipeline().TriggerName",
+						"trigger_time": "@pipeline().TriggerTime",
+						"status": "FAIL",
+						"error_message": "@coalesce(\n    activity('Load Master').Error.Message, \n    activity('Execute WeatherAPI').Error.Message,\n    activity('Execute APICurrency').Error.Message,\n    activity('Execute SQL').Error.Message,\n    'Falha desconhecida no Pipeline'\n)"
+					}
 				},
 				"linkedServiceName": {
 					"referenceName": "Adbdesafiadosdev",

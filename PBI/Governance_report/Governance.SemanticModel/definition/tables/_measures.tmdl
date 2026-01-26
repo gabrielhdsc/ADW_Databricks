@@ -1,0 +1,30 @@
+table _measures
+	lineageTag: 7c8f835b-f927-45d8-b087-1ed6ee37dfd2
+
+	measure 'Duração (Segundos)' =
+			
+			AVERAGEX(
+			    'data_lineage',
+			    DATEDIFF('data_lineage'[StartDate], 'data_lineage'[EndDate], SECOND)
+			)
+		lineageTag: 665aa43e-aae4-42e5-b114-b49978104e96
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column
+		formatString: 0
+		lineageTag: eede60a6-fc79-4fb3-b867-5851afe3cbeb
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _measures = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = 4282cb641d424fff9acf2315fa242da3
+
+	annotation 436ba87b-9c83-4389-a31b-ebd06a36be98 = {"Expression":""}
+

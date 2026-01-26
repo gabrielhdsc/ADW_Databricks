@@ -1,0 +1,16 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.5.0/schema.json",
+  "name": "5418ced7d30fa557c64c",
+  "position": {
+    "x": 21.049968374446554,
+    "y": 32.384566729917772,
+    "z": 4000,
+    "height": 71.2460468058191,
+    "width": 71.2460468058191,
+    "tabOrder": 9000
+  },
+  "visualGroup": {
+    "displayName": "Close Nav",
+    "groupMode": "ScaleMode"
+  }
+}

@@ -1,0 +1,125 @@
+table data_quality
+	lineageTag: dbe237e4-27dc-4b60-af29-818f8eda6fec
+
+	column RunID
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: 1207b66d-578c-4c68-9612-1c4f066776b3
+		summarizeBy: none
+		sourceColumn: RunID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProcessName
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: 6a677ced-51c3-4e1d-84e6-f902545ffe89
+		summarizeBy: none
+		sourceColumn: ProcessName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TableName
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: a99cbd7c-d948-49c0-baea-6da5d426be95
+		summarizeBy: none
+		sourceColumn: TableName
+
+		annotation SummarizationSetBy = Automatic
+
+	column ColumnName
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: 2275c7ae-ab20-4da7-bad1-071a5314f6ca
+		summarizeBy: none
+		sourceColumn: ColumnName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Layer
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: fb6aa122-5562-4884-8c50-1355adbce2fe
+		summarizeBy: none
+		sourceColumn: Layer
+
+		annotation SummarizationSetBy = Automatic
+
+	column CheckType
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: 734fcd56-e065-47db-afde-b3b3ee4e33b2
+		summarizeBy: none
+		sourceColumn: CheckType
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalRows
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 08c87f3b-12c1-4f4a-900e-34bc2ab606de
+		summarizeBy: sum
+		sourceColumn: TotalRows
+
+		annotation SummarizationSetBy = Automatic
+
+	column FailedRows
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 178a032d-b380-44cc-910f-897a97c525a2
+		summarizeBy: sum
+		sourceColumn: FailedRows
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: ccfa5e30-8402-4980-b643-7bb8fdfa7ca2
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column CheckDate
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: e7cffdb2-2416-4f73-9d75-8307ac9b4ce7
+		summarizeBy: none
+		sourceColumn: CheckDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Relacionamento = DATEVALUE(data_quality[CheckDate])
+		isHidden
+		formatString: Long Date
+		lineageTag: 8b580f84-a289-4a21-b25f-6f729ca454ff
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition data_quality = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-2892896435296957.17.azuredatabricks.net", "/sql/1.0/warehouses/8b8cb2e4f5b35803", [Catalog = "", Database = ""]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    governance_Schema = adventure_works_catalog_Database{[Name="governance",Kind="Schema"]}[Data],
+				    data_quality_Table = governance_Schema{[Name="data_quality",Kind="Table"]}[Data]
+				in
+				    data_quality_Table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

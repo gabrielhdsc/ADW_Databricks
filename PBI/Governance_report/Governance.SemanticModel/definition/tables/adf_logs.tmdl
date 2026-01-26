@@ -1,0 +1,107 @@
+table adf_logs
+	lineageTag: 2a2419f4-32b9-4acf-9482-f1e10c862920
+
+	column ADFRunID
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: 7c7605cd-848b-4c88-9064-89d7b1ebef33
+		summarizeBy: none
+		sourceColumn: ADFRunID
+
+		annotation SummarizationSetBy = Automatic
+
+	column PipelineName
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: 690e0eda-0511-47ac-a62e-bfdd4525e91e
+		summarizeBy: none
+		sourceColumn: PipelineName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TriggerName
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: bcc142e9-5925-464d-9ab3-da89eeee24e1
+		summarizeBy: none
+		sourceColumn: TriggerName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TriggerTime
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 57b14b60-ea5d-4b9c-ab99-81b2088dc50d
+		summarizeBy: none
+		sourceColumn: TriggerTime
+
+		annotation SummarizationSetBy = Automatic
+
+	column StartTime
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: a00d1789-bdd4-4246-8b75-08e412036a18
+		summarizeBy: none
+		sourceColumn: StartTime
+
+		annotation SummarizationSetBy = Automatic
+
+	column EndTime
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 651eb16b-6c19-4f7b-a9f4-e727982f2f21
+		summarizeBy: none
+		sourceColumn: EndTime
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: db45a0db-cf1d-42e8-a39f-b9680a730076
+		summarizeBy: none
+		sourceColumn: Status
+
+		annotation SummarizationSetBy = Automatic
+
+	column ErrorMessage
+		dataType: string
+		sourceProviderType: nvarchar(65535)
+		lineageTag: 76923f3b-96f4-433c-8342-e7896ad50972
+		summarizeBy: none
+		sourceColumn: ErrorMessage
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data_Relacionamento = DATEVALUE(ADF_logs[StartTime])
+		isHidden
+		formatString: Long Date
+		lineageTag: 3ef0af73-baef-44cc-b167-c87faa5a9539
+		summarizeBy: none
+
+		changedProperty = DataType
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition adf_logs = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-2892896435296957.17.azuredatabricks.net", "/sql/1.0/warehouses/8b8cb2e4f5b35803", [Catalog = "", Database = ""]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    governance_Schema = adventure_works_catalog_Database{[Name="governance",Kind="Schema"]}[Data],
+				    adf_logs_Table = governance_Schema{[Name="adf_logs",Kind="Table"]}[Data]
+				in
+				    adf_logs_Table
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

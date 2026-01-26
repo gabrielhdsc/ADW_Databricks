@@ -1,0 +1,46 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "1.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "table_measures.sodlinetotalvalue": {
+			      "Binding": {
+			        "ConceptualEntity": "_Measures",
+			        "ConceptualProperty": "SODLineTotalValue"
+			      },
+			      "State": "Generated"
+			    },
+			    "table_measures.productprofit": {
+			      "Binding": {
+			        "ConceptualEntity": "_Measures",
+			        "ConceptualProperty": ".ProductProfit"
+			      },
+			      "State": "Generated"
+			    },
+			    "table_measures.solditemsvolume": {
+			      "Binding": {
+			        "ConceptualEntity": "_Measures",
+			        "ConceptualProperty": ".SoldItem'sVolume"
+			      },
+			      "State": "Generated"
+			    },
+			    "table_measures.productioncost": {
+			      "Binding": {
+			        "ConceptualEntity": "_Measures",
+			        "ConceptualProperty": ".ProductionCost"
+			      },
+			      "State": "Generated"
+			    },
+			    "dim_product.productsubcategoy": {
+			      "Binding": {
+			        "ConceptualEntity": "dim_product",
+			        "ConceptualProperty": "ProductSubCategoy"
+			      },
+			      "State": "Generated"
+			    }
+			  }
+			}
+		contentType: json
+

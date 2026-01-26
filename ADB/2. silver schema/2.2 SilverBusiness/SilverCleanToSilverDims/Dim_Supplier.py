@@ -19,13 +19,16 @@ from pyspark.sql import functions as F
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import xxhash64
 from datetime import datetime
+from ADB.Module.GovernanceUtils import audit_registration, get_run_id, silver_selection
 from ADB.Module.SilverUtils import (
     deduplicate_by_rule,
     add_column_comments,
-    write_silver,
+    write_silver
 )
 
 # COMMAND ----------
+
+current_run_id = get_run_id()
 
 # Leitura das tabelas Silver (clean)
 df_customer        = spark.table("adventure_works_catalog.silver.clean_sales_customer")
@@ -45,6 +48,8 @@ df_currency_rate   = spark.table("adventure_works_catalog.silver.clean_sales_cur
 # =====================================================
 # DIM_SUPPLIER - SILVER
 # =====================================================
+start_time = datetime.now()
+
 # Granularidade: 1 linha por fornecedor
 
 # Criando a tabela
@@ -93,49 +98,109 @@ df_dim_supplier_base = (
     .filter(F.col("SupplierID").isNotNull())
 )
 
-df_dim_supplier_base = deduplicate_by_rule(
-    df_dim_supplier_base,
-    partition_cols=["SupplierID"],
-    order_cols=[
-        F.col("IsActiveSupplier").desc(),
-        F.col("CreditRating").desc()
-    ]
-)
+full_table_name = "adventure_works_catalog.silver.dim_supplier"
+table_name_short ="dim_supplier"
 
-# View de origem
-df_dim_supplier_base.createOrReplaceTempView("src_dim_supplier")
+try:
+    df_dim_supplier_base = deduplicate_by_rule(
+        df_dim_supplier_base,
+        partition_cols=["SupplierID"],
+        order_cols=[
+            F.col("IsActiveSupplier").desc(),
+            F.col("CreditRating").desc()
+        ]
+    )
+    
+    df_dim_supplier_base.cache()
 
-# Merge SCD Type 1
-spark.sql("""
-MERGE INTO adventure_works_catalog.silver.dim_supplier tgt
-USING src_dim_supplier src
-ON tgt.SupplierID = src.SupplierID
+    #Registros processados após as regras e joins (volume transformado)
+    rows_processed = df_dim_supplier_base.count()
 
-WHEN MATCHED AND (
-    NOT (tgt.SupplierName    <=> src.SupplierName) OR
-    NOT (tgt.CreditRating    <=> src.CreditRating) OR
-    NOT (tgt.IsActiveSupplier <=> src.IsActiveSupplier)
-)
-THEN UPDATE SET
-    tgt.SupplierName     = src.SupplierName,
-    tgt.CreditRating     = src.CreditRating,
-    tgt.IsActiveSupplier = src.IsActiveSupplier
+    silver_selection(
+        spark=spark,
+        run_id=current_run_id,
+        df_input=df_dim_supplier_base,
+        process_name="Criação_dim_table",
+        table_name=table_name_short
+    )
 
-WHEN NOT MATCHED THEN
-  INSERT (
-    SupplierID,
-    SupplierName,
-    CreditRating,
-    IsActiveSupplier
-  )
-  VALUES (
-    src.SupplierID,
-    src.SupplierName,
-    src.CreditRating,
-    src.IsActiveSupplier
-  )
-""")
+    # Merge SCD Type 1
+    df_dim_supplier_base.createOrReplaceTempView("src_dim_supplier")
 
+    spark.sql("""
+    MERGE INTO adventure_works_catalog.silver.dim_supplier tgt
+    USING src_dim_supplier src
+    ON tgt.SupplierID = src.SupplierID
+
+    WHEN MATCHED AND (
+        NOT (tgt.SupplierName    <=> src.SupplierName) OR
+        NOT (tgt.CreditRating    <=> src.CreditRating) OR
+        NOT (tgt.IsActiveSupplier <=> src.IsActiveSupplier)
+    )
+    THEN UPDATE SET
+        tgt.SupplierName     = src.SupplierName,
+        tgt.CreditRating     = src.CreditRating,
+        tgt.IsActiveSupplier = src.IsActiveSupplier
+
+    WHEN NOT MATCHED THEN
+    INSERT (
+        SupplierID,
+        SupplierName,
+        CreditRating,
+        IsActiveSupplier
+    )
+    VALUES (
+        src.SupplierID,
+        src.SupplierName,
+        src.CreditRating,
+        src.IsActiveSupplier
+    )
+    """)
+
+
+    #Pegar métricas do merge do DESCRIBE_HISTORY
+    merge_metrics = (
+        spark.sql(f"DESCRIBE HISTORY {full_table_name}")
+        .orderBy(F.col("version").desc())
+        .limit(1)
+        .select("operationMetrics")
+        .collect()[0]["operationMetrics"]
+    )
+
+    rows_written = (
+        int(merge_metrics.get("numTargetRowsInserted", 0))
+        + int(merge_metrics.get("numTargetRowsUpdated", 0))
+    )
+
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        rows_readed_batch = rows_processed,
+        rows_written_batch = rows_written
+    )
+
+    df_dim_supplier_base.unpersist()
+
+except Exception as e:
+
+    df_dim_supplier_base.unpersist()
+    
+    audit_registration(
+        spark=spark,
+        run_id=current_run_id,
+        process_name="Criação_dim_table",
+        layer="SILVER",
+        table_saved = table_name_short,
+        start_date = start_time,
+        status = "FAIL",
+        error_msg = str(e)
+    )
+
+    print(f"Erro em dim_supplier: {e}")
 
 # Descrição das colunas
 dim_supplier_columns = {
