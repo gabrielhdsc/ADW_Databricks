@@ -1,5 +1,5 @@
 # Databricks notebook source
-from pyspark.sql.functions import current_timestamp, input
+from pyspark.sql.functions import current_timestamp, input_file_name
 # Variáveis de configuração.
 input_path = "/mnt/landingzone/api/Weather/CitiesCoordinates"
 checkpoint_dir = "/mnt/adventureworksproject/checkpoints/bronze/WeatherAPI/GeocodingAPI"

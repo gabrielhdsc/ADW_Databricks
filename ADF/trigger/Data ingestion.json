@@ -1,0 +1,25 @@
+{
+	"name": "Data ingestion",
+	"properties": {
+		"description": "Activate data ingestion from SQL Database to Silver layer",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Master",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2026-03-02T00:01:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

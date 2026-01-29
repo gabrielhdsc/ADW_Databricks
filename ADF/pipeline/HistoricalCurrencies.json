@@ -22,7 +22,6 @@
 						"partitionOption": "None"
 					},
 					"dataset": {
-
 						"referenceName": "AdventureWorksTables",
 						"type": "DatasetReference",
 						"parameters": {
@@ -30,7 +29,6 @@
 							"TableNameO": "dbo"
 						}
 					},
-						},
 					"firstRowOnly": false
 				}
 			},

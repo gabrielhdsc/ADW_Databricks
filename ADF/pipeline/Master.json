@@ -1,9 +1,10 @@
 {
-	"name": "MainSQL",
+	"name": "Master",
 	"properties": {
 		"activities": [
 			{
-				"name": "Execute Person",
+				"name": "Execute SQL",
+				"description": "Run SQL ingestion pipelines of all schemas from dataset",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
 				"policy": {
@@ -12,18 +13,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "PersonIngestion",
+						"referenceName": "MainSQL",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "Execute HR",
+				"name": "Execute APICurrency",
+				"description": "Run Currency API ingestion pipeline",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Execute Person",
+						"activity": "Execute SQL",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -35,18 +37,21 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "HRIngestion",
+						"referenceName": "MainCurrency",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"executionMode": "latest"
+					}
 				}
 			},
 			{
-				"name": "Execute Production",
+				"name": "Execute WeatherAPI",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Execute HR",
+						"activity": "Execute APICurrency",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -58,62 +63,41 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "ProductionIngestion",
+						"referenceName": "GetCitiesRealCoords",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true
 				}
 			},
 			{
-				"name": "Execute Purchasing",
-				"type": "ExecutePipeline",
+				"name": "Load Master",
+				"description": "Execute all notebooks that ingest Data from Storage to Databricks bronze, silver layer and data modelling",
+				"type": "DatabricksJob",
 				"dependsOn": [
 					{
-						"activity": "Execute Production",
+						"activity": "Execute WeatherAPI",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
 				],
 				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "PurchasingIngestion",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
-				}
-			},
-			{
-				"name": "Execute Sales",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Execute Purchasing",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
+					"jobId": "155157525083421"
 				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "SalesIngestion",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
+				"linkedServiceName": {
+					"referenceName": "Adbdesafiadosdev",
+					"type": "LinkedServiceReference"
 				}
 			}
 		],
-		"folder": {
-			"name": "SQL"
-		},
 		"annotations": []
 	}
 }
