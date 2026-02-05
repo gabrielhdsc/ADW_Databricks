@@ -1,0 +1,17 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "1a48afaeb57ff89861b4",
+  "position": {
+    "x": 0,
+    "y": 0,
+    "z": 11000,
+    "height": 720,
+    "width": 203,
+    "tabOrder": 12000
+  },
+  "visualGroup": {
+    "displayName": "Open Nav",
+    "groupMode": "ScaleMode"
+  },
+  "isHidden": true
+}

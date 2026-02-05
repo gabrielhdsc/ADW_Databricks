@@ -1,0 +1,516 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "e95ea96596606e562887",
+  "displayName": "Drill Down Breakdown",
+  "displayOption": "FitToPage",
+  "height": 720,
+  "width": 1280,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "76239bef54b8d02baa8d",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_product"
+                  }
+                },
+                "Hierarchy": "ProductName Hierarchy"
+              }
+            },
+            "Level": "ProductCategory"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "dim_product",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "ProductCategory"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Clothing'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "a6ca1ad6b4bfdd50fa98",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_product"
+                  }
+                },
+                "Hierarchy": "ProductName Hierarchy"
+              }
+            },
+            "Level": "ProductSubCategoy"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "dim_product",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "ProductSubCategoy"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Gloves'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "54895b9b0a4958808dc1",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_product"
+                  }
+                },
+                "Hierarchy": "ProductName Hierarchy"
+              }
+            },
+            "Level": "ProductName"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "d",
+              "Entity": "dim_product",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "ProductName"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Half-Finger Gloves, M'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "eb08e82f42354aea4a57",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_location"
+                  }
+                },
+                "Hierarchy": "CountryName Hierarchy"
+              }
+            },
+            "Level": "CountryName"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "61aa2d099332cede84c9",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_location"
+                  }
+                },
+                "Hierarchy": "CountryName Hierarchy"
+              }
+            },
+            "Level": "StateProvinceName"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "d09e952acef94f2191d7",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_location"
+                  }
+                },
+                "Hierarchy": "CountryName Hierarchy"
+              }
+            },
+            "Level": "City"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "3937dc576f78be967e05",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "CalendarQuarter"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "0ee46d15adeda1cae663",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_date"
+                  }
+                },
+                "Hierarchy": "CalendarHierarchy"
+              }
+            },
+            "Level": "MonthName"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "d84a75c6a5148dfb4dc5",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_date"
+                  }
+                },
+                "Hierarchy": "CalendarHierarchy"
+              }
+            },
+            "Level": "CalendarYear"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "7aa7466287eb99f4e3b6",
+        "field": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_date"
+                  }
+                },
+                "Hierarchy": "CalendarHierarchy"
+              }
+            },
+            "Level": "DayNumberOfMonth"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "c87318f6ccdf5c8f46a5",
+    "type": "Drillthrough",
+    "parameters": [
+      {
+        "name": "ba631dc9c09a0eb1ce01",
+        "boundFilter": "76239bef54b8d02baa8d",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_product"
+                  }
+                },
+                "Hierarchy": "ProductName Hierarchy"
+              }
+            },
+            "Level": "ProductCategory"
+          }
+        }
+      },
+      {
+        "name": "8dfe32bc3dc5927a5a86",
+        "boundFilter": "a6ca1ad6b4bfdd50fa98",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_product"
+                  }
+                },
+                "Hierarchy": "ProductName Hierarchy"
+              }
+            },
+            "Level": "ProductSubCategoy"
+          }
+        }
+      },
+      {
+        "name": "5813a4e8be5ac595c2b4",
+        "boundFilter": "54895b9b0a4958808dc1",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_product"
+                  }
+                },
+                "Hierarchy": "ProductName Hierarchy"
+              }
+            },
+            "Level": "ProductName"
+          }
+        }
+      },
+      {
+        "name": "8c04c63bdb94b8fbbf50",
+        "boundFilter": "eb08e82f42354aea4a57",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_location"
+                  }
+                },
+                "Hierarchy": "CountryName Hierarchy"
+              }
+            },
+            "Level": "CountryName"
+          }
+        }
+      },
+      {
+        "name": "61af13a8802eab0e3cce",
+        "boundFilter": "61aa2d099332cede84c9",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_location"
+                  }
+                },
+                "Hierarchy": "CountryName Hierarchy"
+              }
+            },
+            "Level": "StateProvinceName"
+          }
+        }
+      },
+      {
+        "name": "a0145e5bfd3126c77d21",
+        "boundFilter": "d09e952acef94f2191d7",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_location"
+                  }
+                },
+                "Hierarchy": "CountryName Hierarchy"
+              }
+            },
+            "Level": "City"
+          }
+        }
+      },
+      {
+        "name": "eb01aed63cd7509f9d81",
+        "boundFilter": "3937dc576f78be967e05",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "CalendarQuarter"
+          }
+        }
+      },
+      {
+        "name": "9bbccb1018060c73dd38",
+        "boundFilter": "0ee46d15adeda1cae663",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_date"
+                  }
+                },
+                "Hierarchy": "CalendarHierarchy"
+              }
+            },
+            "Level": "MonthName"
+          }
+        }
+      },
+      {
+        "name": "64d8cdaecf3d09bca878",
+        "boundFilter": "d84a75c6a5148dfb4dc5",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_date"
+                  }
+                },
+                "Hierarchy": "CalendarHierarchy"
+              }
+            },
+            "Level": "CalendarYear"
+          }
+        }
+      },
+      {
+        "name": "03497ec6847b95224159",
+        "boundFilter": "7aa7466287eb99f4e3b6",
+        "fieldExpr": {
+          "HierarchyLevel": {
+            "Expression": {
+              "Hierarchy": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_date"
+                  }
+                },
+                "Hierarchy": "CalendarHierarchy"
+              }
+            },
+            "Level": "DayNumberOfMonth"
+          }
+        }
+      }
+    ],
+    "referenceScope": "CrossReport"
+  }
+}

@@ -1,0 +1,114 @@
+table _Measures
+	lineageTag: 6b8be32b-704a-48c0-8a52-bd8c46d044d2
+
+	measure '.ProductColourHierarchy' =
+			
+			SWITCH(
+			    SELECTEDVALUE('dim_product'[ProductCategory]),
+			    "Clothing", "#327F3C",  -- Verde Escuro
+			    "Accessories", "#59993D", -- Verde Claro
+			    "Miscellaneous", "#118DFF", -- Azul Claro
+			    "Components", "#E28D2B", --Laranja
+			    "Bikes", "#6739B5", --Roxo
+			     "#D3D3D3"    -- Cor padrão (Cinza) para o restante
+			)
+		lineageTag: 23336f31-7a51-4fa7-a3e9-27793ac5e783
+
+	measure SOSubTotalValue = ```
+			
+			--3. Soma os Subtotals correspondentes de cada OrderID distinto.
+			SUMX(
+			    -- 1. Cria uma lista temporária de OrderIDs distintos.
+			    DISTINCT('fact_sales_order'[OrderID]), 
+			    -- 2. Para cada OrderID distinto, captura o valor do SubTotal correspondente
+			    CALCULATE(MAX('fact_sales_order'[SubTotal])))
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: bb9630c2-964c-4d19-b7dc-cf7171be5013
+
+	measure PURSubTotalValue = ```
+			
+			--3. Soma os Subtotals correspondentes de cada OrderID distinto.
+			SUMX(
+			    -- 1. Cria uma lista temporária de OrderIDs distintos.
+			    DISTINCT('fact_purchases'[OrderID]), 
+			    -- 2. Para cada OrderID distinto, captura o valor do Subtotal correspondente
+			    CALCULATE(MAX('fact_purchases'[SubTotal]))
+			)
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 95cc62a1-3f87-44f5-918d-8413e71bfdbb
+
+	measure SODLineTotalValue =
+			
+			SUM(fact_sales_order_detail[LineTotal])
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: f8a36ac6-530d-4e0d-9f74-c745cea3ba11
+
+	measure '.SoldItem''sVolume' =
+			
+			SUM(fact_sales_order_detail[OrderQty])
+		formatString: #,0
+		lineageTag: 16164e6d-65b5-4539-a0b1-328d575483a6
+
+	measure '.TotalProfit' = ```
+			
+			[SOSubTotalValue] - [PURSubTotalValue]
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: faaf4dd6-5988-4b51-8872-a614d8ef4233
+
+	measure '.ProductionCost' =
+			
+			SUMX (
+			    fact_sales_order_detail,
+			    fact_sales_order_detail[OrderQty]
+			        * RELATED ( Dim_Product[StandardCost] )
+			)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 1fc3bad2-9090-4c04-805a-24c0deb6b008
+
+	measure '.ProductProfit' =
+			
+			[SODLineTotalValue] - [.ProductionCost]
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: be3898b0-add3-43af-9f4b-b299791fc904
+
+	measure '.VolumeSoldPreviousMonth' =
+			
+			CALCULATE (
+			    [.SoldItem'sVolume],
+			    DATEADD ( dim_date[FullDate], -1, MONTH )
+			)
+		formatString: 0
+		lineageTag: 165f76ea-55ab-4f75-bc72-609893307f0e
+
+	measure '.RevenuePreviousMonth' =
+			
+			CALCULATE (
+			    [SOSubTotalValue],
+			    DATEADD ( dim_date[FullDate], -1, MONTH )
+			)
+		lineageTag: 2303ca76-0e29-4fba-a340-7d8568374f45
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Column
+		isHidden
+		formatString: 0
+		lineageTag: 8c2b06f3-9cd0-4299-9965-59100f7febf6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Column]
+
+		annotation SummarizationSetBy = User
+
+	partition _Measures = calculated
+		mode: import
+		source = Row("Column", BLANK())
+
+	annotation PBI_Id = 8b985740e8674682ad2af51e01b7453d
+
+	annotation 436ba87b-9c83-4389-a31b-ebd06a36be98 = {"Expression":""}
+

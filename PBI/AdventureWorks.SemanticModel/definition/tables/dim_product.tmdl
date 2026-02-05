@@ -1,101 +1,91 @@
 table dim_product
-	lineageTag: fd5548cf-8c4d-4702-96ca-59774e0e45ea
+	lineageTag: 0a7f06f5-36ce-430e-b6ca-42fba3d7ec2c
 
-	column ProductKey
+	column Product_SK
 		dataType: int64
 		formatString: 0
-		lineageTag: ca958189-6612-486b-8175-29d00e5dc8f3
+		lineageTag: a5a2f870-3a83-4271-a500-e6cfcb4bb32c
 		summarizeBy: none
-		sourceColumn: ProductKey
-
-		annotation SummarizationSetBy = Automatic
-
-	column ProductNumber
-		dataType: string
-		lineageTag: 072ed2ea-e0e1-4a8c-a5eb-b1602f8b84bb
-		summarizeBy: none
-		sourceColumn: ProductNumber
+		sourceColumn: Product_SK
 
 		annotation SummarizationSetBy = Automatic
 
 	column ProductName
 		dataType: string
-		lineageTag: 873a4279-6c2e-4c5c-8026-181cd1f8fd46
+		lineageTag: a5accb73-4572-45d4-8094-a6ea66b0016f
 		summarizeBy: none
 		sourceColumn: ProductName
 
 		annotation SummarizationSetBy = Automatic
 
-	column ModelName
+	column ProductCategory
 		dataType: string
-		lineageTag: 23d5c7ec-7288-423e-b8c2-46af209ba2f5
+		lineageTag: 8d4085af-81c8-4005-aa4b-967a29fdcf18
 		summarizeBy: none
-		sourceColumn: ModelName
+		sourceColumn: ProductCategory
 
 		annotation SummarizationSetBy = Automatic
 
-	column SubCategory
+	column ProductSubCategoy
 		dataType: string
-		lineageTag: b0c4dc68-1a8a-4892-9d98-448751378012
+		lineageTag: c97a486f-7aaa-4a26-9fc4-a22b502e8bb4
 		summarizeBy: none
-		sourceColumn: SubCategory
+		sourceColumn: ProductSubCategoy
 
 		annotation SummarizationSetBy = Automatic
 
-	column Category
-		dataType: string
-		lineageTag: b0ad9b0a-8648-4db5-8d39-f5115d005b70
+	column ProductID
+		dataType: int64
+		formatString: 0
+		lineageTag: 0b09f5ff-66a0-40a5-8a28-def58bebd8de
 		summarizeBy: none
-		sourceColumn: Category
+		sourceColumn: ProductID
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 	column StandardCost
 		dataType: double
-		lineageTag: 441f7bf5-a381-49e7-9026-2e1ec8b55039
+		lineageTag: 15e1ae9d-f631-41b4-a472-73b69a69a5ae
 		summarizeBy: none
 		sourceColumn: StandardCost
 
-		annotation SummarizationSetBy = Automatic
+		annotation SummarizationSetBy = User
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
-	column ListPrice
-		dataType: double
-		lineageTag: 8eb67de2-d1e1-475e-94f9-de01531cd054
-		summarizeBy: none
-		sourceColumn: ListPrice
+	hierarchy 'ProductName Hierarchy'
+		lineageTag: a589208b-dea5-4e0e-ae9e-e107f8d281ce
 
-		annotation SummarizationSetBy = Automatic
+		level ProductCategory
+			lineageTag: 911bcad4-514f-499b-b4ec-af5994aaf928
+			column: ProductCategory
 
-		annotation PBI_FormatHint = {"isGeneralNumber":true}
+		level ProductSubCategoy
+			lineageTag: c1cde91c-8f2f-4798-9552-539b8ae5425c
+			column: ProductSubCategoy
 
-	column Stock_CurrentQuantity
-		dataType: int64
-		formatString: 0
-		lineageTag: 2b864581-aac4-48ff-ae34-b325c4c8d52b
-		summarizeBy: none
-		sourceColumn: Stock_CurrentQuantity
-
-		annotation SummarizationSetBy = Automatic
-
-	column TotalUnitsProduced
-		dataType: int64
-		formatString: 0
-		lineageTag: 283ff638-c0cf-4582-9ba6-6fb42744b7b9
-		summarizeBy: none
-		sourceColumn: TotalUnitsProduced
-
-		annotation SummarizationSetBy = Automatic
+		level ProductName
+			lineageTag: ed280a13-fbeb-4888-bcd9-2f3000e951f6
+			column: ProductName
 
 	partition dim_product = m
 		mode: import
 		source =
 				let
-				    Source = Databricks.Catalogs("adb-3073418945021346.6.azuredatabricks.net", "/sql/1.0/warehouses/ba136deae61fb922", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    Source = Databricks.Catalogs("adb-980023092254454.14.azuredatabricks.net", "/sql/1.0/warehouses/f8b7002c9488e388", [Catalog = "", Database = ""]),
 				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
 				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
-				    dim_product_Table = silver_Schema{[Name="dim_product",Kind="Table"]}[Data]
+				    dim_product_Table = silver_Schema{[Name="dim_product",Kind="Table"]}[Data],
+				    #"Replaced Value" = Table.ReplaceValue(dim_product_Table,null,"Miscellaneous",Replacer.ReplaceValue,{"Category", "SubCategory"}),
+				    #"Added Custom" = Table.AddColumn(#"Replaced Value", "ProductCategory", each if [Category] = "Not registered" and [SubCategory] = "Not registered" then "Miscellaneous" else [Category]),
+				    #"Added Custom1" = Table.AddColumn(#"Added Custom", "ProductSubCategoy", each if [Category] = "Not registered" and [SubCategory] = "Not registered" then "Miscellaneous" else [SubCategory]),
+				    #"Removed Columns" = Table.RemoveColumns(#"Added Custom1",{"Category", "SubCategory", "ModelName", "ListPrice"})
 				in
-				    dim_product_Table
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
 

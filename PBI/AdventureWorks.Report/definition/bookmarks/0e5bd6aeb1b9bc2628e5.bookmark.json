@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "DrillNavClose",
+  "name": "0e5bd6aeb1b9bc2628e5",
+  "options": {
+    "targetVisualNames": [],
+    "suppressData": true
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "e95ea96596606e562887",
+    "sections": {
+      "e95ea96596606e562887": {
+        "visualContainers": {
+          "7f1e05f619ee34f687b0": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "c0f065d64fa1ebb1c554": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "872e7953b9c3e6de8b23": {
+            "isHidden": true
+          }
+        }
+      }
+    },
+    "objects": {}
+  }
+}

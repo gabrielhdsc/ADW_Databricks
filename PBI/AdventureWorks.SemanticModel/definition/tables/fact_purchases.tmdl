@@ -1,0 +1,96 @@
+table fact_purchases
+	lineageTag: 19db933d-85dc-4224-8809-88e1e514a9dc
+
+	column PurchaseID
+		dataType: int64
+		formatString: 0
+		lineageTag: b4cbea65-753a-4562-88d7-cdbff02c4f3d
+		summarizeBy: none
+		sourceColumn: PurchaseID
+
+		annotation SummarizationSetBy = User
+
+	column OrderID
+		dataType: int64
+		formatString: 0
+		lineageTag: 9ad44b29-2dcb-436a-ac94-ec0b76730ca6
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		annotation SummarizationSetBy = User
+
+	column Product_SK
+		dataType: int64
+		formatString: 0
+		lineageTag: b24c2ac0-1b3b-4b54-8813-d945e8a45d77
+		summarizeBy: none
+		sourceColumn: Product_SK
+
+		annotation SummarizationSetBy = Automatic
+
+	column OrderDate_SK
+		dataType: int64
+		formatString: 0
+		lineageTag: 44c36d6d-8a42-423b-b687-c0f9a464c33a
+		summarizeBy: none
+		sourceColumn: OrderDate_SK
+
+		annotation SummarizationSetBy = User
+
+	column SubTotal
+		dataType: double
+		lineageTag: 3a8721fd-5fa3-4b8f-b9be-e7b5af788f7e
+		summarizeBy: none
+		sourceColumn: SubTotal
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column OrderQty
+		dataType: int64
+		formatString: 0
+		lineageTag: 3a901cb5-1c43-43bd-a9df-bd4ca673e1a3
+		summarizeBy: none
+		sourceColumn: OrderQty
+
+		annotation SummarizationSetBy = User
+
+	column UnitPrice
+		dataType: double
+		lineageTag: 9e2de025-842f-4a30-835b-37e02dd41d64
+		summarizeBy: none
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column LineTotal
+		dataType: double
+		lineageTag: c63f339d-bdae-4180-8d38-141f745e0e0e
+		summarizeBy: none
+		sourceColumn: LineTotal
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_purchases = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-980023092254454.14.azuredatabricks.net", "/sql/1.0/warehouses/f8b7002c9488e388", [Catalog = "", Database = ""]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    fact_purchases_Table = silver_Schema{[Name="fact_purchases",Kind="Table"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(fact_purchases_Table,{"Supplier_SK", "ShipDate_SK", "Currency_SK", "ReceivedQuantity", "RejectedQuantity", "StockedQuantity", "TaxAmt", "ShippingCost", "TotalDue"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

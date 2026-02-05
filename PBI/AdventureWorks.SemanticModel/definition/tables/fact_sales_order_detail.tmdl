@@ -1,0 +1,86 @@
+table fact_sales_order_detail
+	lineageTag: 1de710e9-5fc5-458b-84e5-c7c02102c3c9
+
+	column SalesID
+		dataType: int64
+		formatString: 0
+		lineageTag: 4c2e201b-78f8-4861-9a4a-62747c565a38
+		summarizeBy: none
+		sourceColumn: SalesID
+
+		annotation SummarizationSetBy = User
+
+	column OrderID
+		dataType: int64
+		formatString: 0
+		lineageTag: 01080211-001d-45c4-9d1f-48dc56446ba1
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		annotation SummarizationSetBy = User
+
+	column Product_SK
+		dataType: int64
+		formatString: 0
+		lineageTag: 0bfa6cb4-b9e3-430a-8f78-0ca54fe667be
+		summarizeBy: none
+		sourceColumn: Product_SK
+
+		annotation SummarizationSetBy = Automatic
+
+	column LineTotal
+		dataType: double
+		lineageTag: 4195e8f3-38ba-4cf3-85e3-d7c06b7d8cc4
+		summarizeBy: none
+		sourceColumn: LineTotal
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column OrderQty
+		dataType: int64
+		formatString: 0
+		lineageTag: 1bb71ce2-c4e2-44ac-bc3b-38690cd0ef8a
+		summarizeBy: none
+		sourceColumn: OrderQty
+
+		annotation SummarizationSetBy = User
+
+	column UnitPrice
+		dataType: double
+		lineageTag: 1a79522c-f48a-4e95-8c59-cb3e51692689
+		summarizeBy: none
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column UnitPriceDiscount
+		dataType: double
+		lineageTag: f4a6e2ac-97bf-48cf-b064-f85895ac0877
+		summarizeBy: none
+		sourceColumn: UnitPriceDiscount
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition fact_sales_order_detail = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-980023092254454.14.azuredatabricks.net", "/sql/1.0/warehouses/f8b7002c9488e388", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    fact_sales_order_detail_Table = silver_Schema{[Name="fact_sales_order_detail",Kind="Table"]}[Data]
+				in
+				    fact_sales_order_detail_Table
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

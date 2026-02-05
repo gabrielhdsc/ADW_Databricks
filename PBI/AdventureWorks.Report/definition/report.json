@@ -1,0 +1,99 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.0.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY25SU11",
+      "reportVersionAtImport": {
+        "visual": "2.4.0",
+        "report": "3.0.0",
+        "page": "2.3.0"
+      },
+      "type": "SharedResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "adventure-works-logo-150x1504840211933670512.png",
+          "path": "adventure-works-logo-150x1504840211933670512.png",
+          "type": "Image"
+        },
+        {
+          "name": "filter09960658404100564.png",
+          "path": "filter09960658404100564.png",
+          "type": "Image"
+        },
+        {
+          "name": "filtro_(3)8304592882922524.png",
+          "path": "filtro_(3)8304592882922524.png",
+          "type": "Image"
+        },
+        {
+          "name": "data-analytics24828121665081104.png",
+          "path": "data-analytics24828121665081104.png",
+          "type": "Image"
+        },
+        {
+          "name": "mapa19369665864542718.png",
+          "path": "mapa19369665864542718.png",
+          "type": "Image"
+        },
+        {
+          "name": "map36752212937282913.png",
+          "path": "map36752212937282913.png",
+          "type": "Image"
+        }
+      ]
+    },
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY25SU11",
+          "path": "BaseThemes/CY25SU11.json",
+          "type": "BaseTheme"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

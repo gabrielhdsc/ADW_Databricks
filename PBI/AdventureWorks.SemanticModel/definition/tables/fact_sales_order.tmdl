@@ -1,0 +1,76 @@
+table fact_sales_order
+	lineageTag: 454c5447-b814-4dbe-a2e2-30a212fff73c
+
+	column OrderID
+		dataType: int64
+		formatString: 0
+		lineageTag: 9f3f83a7-5a6e-4d90-bc68-d932e1af2351
+		summarizeBy: none
+		sourceColumn: OrderID
+
+		annotation SummarizationSetBy = User
+
+	column OrderDate_SK
+		dataType: int64
+		formatString: 0
+		lineageTag: 5f028353-1f9d-4fed-890e-ade3db178c37
+		summarizeBy: none
+		sourceColumn: OrderDate_SK
+
+		annotation SummarizationSetBy = Automatic
+
+	column Location_SK
+		dataType: int64
+		formatString: 0
+		lineageTag: 0dfccf61-4910-4216-9f06-db41a10501a0
+		summarizeBy: none
+		sourceColumn: Location_SK
+
+		annotation SummarizationSetBy = Automatic
+
+	column SubTotal
+		dataType: double
+		lineageTag: 3cf815ea-0187-4a35-884c-388c2bf9e508
+		summarizeBy: none
+		sourceColumn: SubTotal
+
+		annotation SummarizationSetBy = User
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ShipToAddressID
+		dataType: int64
+		formatString: 0
+		lineageTag: 2a817491-55d9-4a69-bbe3-d3e7f0415eae
+		summarizeBy: none
+		sourceColumn: ShipToAddressID
+
+		annotation SummarizationSetBy = User
+
+	column Territory_SK
+		dataType: int64
+		formatString: 0
+		lineageTag: f80b7bdb-701d-44ee-8bd0-44277014803b
+		summarizeBy: none
+		sourceColumn: Territory_SK
+
+		annotation SummarizationSetBy = User
+
+	partition fact_sales_order = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-980023092254454.14.azuredatabricks.net", "/sql/1.0/warehouses/f8b7002c9488e388", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    fact_sales_order_Table = silver_Schema{[Name="fact_sales_order",Kind="Table"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(fact_sales_order_Table,{"Customer_SK", "ShipDate_SK", "Currency_SK", "ShippingCost", "TaxAmt"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

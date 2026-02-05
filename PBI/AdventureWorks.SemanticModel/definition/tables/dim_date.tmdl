@@ -1,0 +1,126 @@
+table dim_date
+	lineageTag: cc429e04-bf73-4bdd-9574-77544569aac9
+	dataCategory: Time
+
+	column DateKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 3a0ef090-b7b8-49bb-bb67-0d2bc67c87ab
+		summarizeBy: none
+		sourceColumn: DateKey
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullDate
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		lineageTag: 084bb8be-7b51-4ffc-b49f-874852acf963
+		summarizeBy: none
+		sourceColumn: FullDate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column DayNumberOfWeek
+		dataType: int64
+		formatString: 0
+		lineageTag: 42631934-d819-4386-be99-2d5778425c08
+		summarizeBy: none
+		sourceColumn: DayNumberOfWeek
+
+		annotation SummarizationSetBy = User
+
+	column DayNameOfWeek
+		dataType: string
+		lineageTag: 7f5b411c-6f28-4287-8852-d1f0162da21f
+		summarizeBy: none
+		sourceColumn: DayNameOfWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayNumberOfMonth
+		dataType: int64
+		formatString: 0
+		lineageTag: 71f33d79-9131-4c42-9763-696afe649d53
+		summarizeBy: none
+		sourceColumn: DayNumberOfMonth
+
+		annotation SummarizationSetBy = User
+
+	column MonthNumberOfYear
+		dataType: int64
+		formatString: 0
+		lineageTag: c2148174-48d7-4261-9447-a72ffdc10112
+		summarizeBy: none
+		sourceColumn: MonthNumberOfYear
+
+		annotation SummarizationSetBy = User
+
+	column MonthName
+		dataType: string
+		lineageTag: 3e852316-8669-4532-abd4-4f5526dcc74b
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: MonthNumberOfYear
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column CalendarQuarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 818a8d18-3ed3-46a7-afe9-f36986aba03b
+		summarizeBy: none
+		sourceColumn: CalendarQuarter
+
+		annotation SummarizationSetBy = User
+
+	column CalendarYear
+		dataType: int64
+		formatString: 0
+		lineageTag: eecbdad6-3689-4b3c-9bdd-3064fdab0826
+		summarizeBy: none
+		sourceColumn: CalendarYear
+
+		annotation SummarizationSetBy = User
+
+	hierarchy CalendarHierarchy
+		lineageTag: 417bb559-36bd-4727-bd37-3760fcccdd49
+
+		level CalendarYear
+			lineageTag: 2f07bf8b-245b-4eda-a4fc-fab66b64df26
+			column: CalendarYear
+
+		level CalendarQuarter
+			lineageTag: c4b9a926-1ac4-4e79-9ade-f5b96dc53ec7
+			column: CalendarQuarter
+
+		level MonthName
+			lineageTag: 96397cf0-479f-4625-872c-44a80dab8ea2
+			column: MonthName
+
+		level DayNumberOfMonth
+			lineageTag: d7bbd101-f851-4ca2-b7f9-2bb43db26904
+			column: DayNumberOfMonth
+
+	partition dim_date = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-980023092254454.14.azuredatabricks.net", "/sql/1.0/warehouses/f8b7002c9488e388", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    dim_date_Table = silver_Schema{[Name="dim_date",Kind="Table"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(dim_date_Table,{"IsWeekend"})
+				in
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

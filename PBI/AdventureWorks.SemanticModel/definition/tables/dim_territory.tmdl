@@ -1,0 +1,56 @@
+table dim_territory
+	lineageTag: ea9adb87-f9fd-4202-96b8-26b3066644f5
+
+	column Territory_SK
+		dataType: int64
+		formatString: 0
+		lineageTag: 1c31f7b7-f2bd-44e7-ba42-adeab4be135c
+		summarizeBy: none
+		sourceColumn: Territory_SK
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryID
+		dataType: int64
+		formatString: 0
+		lineageTag: 633046d6-8b46-4c99-bd00-10220b596936
+		summarizeBy: none
+		sourceColumn: TerritoryID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryName
+		dataType: string
+		lineageTag: 11bf1daf-33b9-40a8-8a80-a7d9f518c2ba
+		summarizeBy: none
+		sourceColumn: TerritoryName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TerritoryGroup
+		dataType: string
+		lineageTag: efb7a2b1-06be-4739-9271-f5dbd605dde1
+		summarizeBy: none
+		sourceColumn: TerritoryGroup
+
+		annotation SummarizationSetBy = Automatic
+
+	column CountryRegionCode
+		dataType: string
+		lineageTag: c9db0cee-9200-404c-9627-3d79b395edce
+		summarizeBy: none
+		sourceColumn: CountryRegionCode
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_territory = m
+		mode: import
+		source =
+				let
+				    Source = Databricks.Catalogs("adb-821278706478627.7.azuredatabricks.net", "/sql/1.0/warehouses/485ebe46171a34b8", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
+				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
+				    dim_territory_Table = silver_Schema{[Name="dim_territory",Kind="Table"]}[Data]
+				in
+				    dim_territory_Table
+

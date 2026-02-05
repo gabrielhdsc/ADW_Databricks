@@ -1,104 +1,77 @@
 table dim_location
-	lineageTag: 799d8de5-a3a6-4dc4-9bbf-8a6fc662081c
+	lineageTag: ac80cb8a-51df-40e9-8b25-43c829d067ad
 
-	column AddressID
+	column Location_SK
 		dataType: int64
 		formatString: 0
-		lineageTag: 1eef70f8-ed72-4090-8c5e-8f75da0d6873
-		summarizeBy: count
-		sourceColumn: AddressID
-
-		annotation SummarizationSetBy = Automatic
-
-	column AddressLine1
-		dataType: string
-		lineageTag: 2f461742-cdc3-47ff-a46d-41aa2b2092de
+		lineageTag: 6b7c7dc7-edc8-4fd7-8a81-2bb476ed04f9
 		summarizeBy: none
-		sourceColumn: AddressLine1
-
-		annotation SummarizationSetBy = Automatic
-
-	column AddressLine2
-		dataType: string
-		lineageTag: 99edc326-7902-48b5-a5d3-decd414c64a2
-		summarizeBy: none
-		sourceColumn: AddressLine2
+		sourceColumn: Location_SK
 
 		annotation SummarizationSetBy = Automatic
 
 	column City
 		dataType: string
-		lineageTag: 08cf99e7-f4c7-4329-ac02-00f1eb5f23d9
+		lineageTag: 1fa0fb4d-0a21-481e-872c-168758973a66
 		summarizeBy: none
 		sourceColumn: City
 
 		annotation SummarizationSetBy = Automatic
 
-	column PostalCode
-		dataType: string
-		lineageTag: e2ba931c-2d0d-4bd6-8a66-0e720b599086
-		summarizeBy: none
-		sourceColumn: PostalCode
-
-		annotation SummarizationSetBy = Automatic
-
 	column StateProvinceName
 		dataType: string
-		lineageTag: 71a09f94-79ff-42d0-826f-3e258fc76fea
+		lineageTag: 35ad690e-ab7e-4113-bb52-90e321fa24e4
 		summarizeBy: none
 		sourceColumn: StateProvinceName
 
 		annotation SummarizationSetBy = Automatic
 
-	column CountryRegionName
+	column CountryName
 		dataType: string
-		lineageTag: 0ede42be-61fd-48e7-9616-ce1311ead7fc
+		lineageTag: 299dfc19-e5b5-486e-8900-9c4b4fb03d25
 		summarizeBy: none
-		sourceColumn: CountryRegionName
+		sourceColumn: CountryName
 
 		annotation SummarizationSetBy = Automatic
 
-	column TerritoryID
-		dataType: int64
-		formatString: 0
-		lineageTag: baeacedf-025b-49dc-b188-8b20b4d6e287
-		summarizeBy: none
-		sourceColumn: TerritoryID
-
-		annotation SummarizationSetBy = Automatic
-
-	column TerritoryName
+	column SpatialLocation
 		dataType: string
-		lineageTag: 74b7ec72-72ae-4aba-9fa5-ed15f1987297
+		lineageTag: a13683c1-da08-4913-9734-193c2baded77
 		summarizeBy: none
-		sourceColumn: TerritoryName
+		sourceColumn: SpatialLocation
 
 		annotation SummarizationSetBy = Automatic
 
-	column TerritoryGroup
-		dataType: string
-		lineageTag: 10481fdb-e755-4662-8233-1d681e778201
-		summarizeBy: none
-		sourceColumn: TerritoryGroup
+	hierarchy 'CountryName Hierarchy'
+		lineageTag: 4030f580-34db-4abf-ac92-5377c3c72cab
 
-		annotation SummarizationSetBy = Automatic
+		level CountryName
+			lineageTag: 73d9e26d-bf82-4db5-b715-e2b87c3f8631
+			column: CountryName
 
-	column SpatialLocationString
-		dataType: string
-		lineageTag: 6c0e2d19-fae8-41b6-a2cc-cfdfa7250f73
-		summarizeBy: none
-		sourceColumn: SpatialLocationString
+		level StateProvinceName
+			lineageTag: 6350ff1c-28b9-4037-8122-c79d2bb3eff5
+			column: StateProvinceName
 
-		annotation SummarizationSetBy = Automatic
+		level City
+			lineageTag: 8fdeae42-ac52-45ea-906c-600df0b948ca
+			column: City
 
 	partition dim_location = m
 		mode: import
 		source =
 				let
-				    Source = Databricks.Catalogs("adb-3073418945021346.6.azuredatabricks.net", "/sql/1.0/warehouses/ba136deae61fb922", [Catalog=null, Database=null, QueryTags=null, EnableAutomaticProxyDiscovery=null, Implementation=null]),
+				    Source = Databricks.Catalogs("adb-980023092254454.14.azuredatabricks.net", "/sql/1.0/warehouses/f8b7002c9488e388", [Catalog = "", Database = ""]),
 				    adventure_works_catalog_Database = Source{[Name="adventure_works_catalog",Kind="Database"]}[Data],
 				    silver_Schema = adventure_works_catalog_Database{[Name="silver",Kind="Schema"]}[Data],
-				    dim_location_Table = silver_Schema{[Name="dim_location",Kind="Table"]}[Data]
+				    dim_location_Table = silver_Schema{[Name="dim_location",Kind="Table"]}[Data],
+				    #"Removed Columns" = Table.RemoveColumns(dim_location_Table,{"AddressID", "AddressLine1", "AddressLine2", "PostalCode"})
 				in
-				    dim_location_Table
+				    #"Removed Columns"
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
 

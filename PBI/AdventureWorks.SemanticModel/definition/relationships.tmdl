@@ -1,145 +1,30 @@
-relationship 22c7c335-5ec4-44c3-bca1-d35dc5d6f06e
-	joinOnDateBehavior: datePartOnly
-	fromColumn: Calendar.Date
-	toColumn: LocalDateTable_856b7685-1933-47d2-a5b5-9abe3428f3fa.Date
+relationship AutoDetected_a0b00b14-4b05-45fe-976f-8636ce808a1f
+	fromColumn: fact_purchases.Product_SK
+	toColumn: dim_product.Product_SK
 
-relationship 04889b01-97c3-8566-6b88-331705215601
-	fromColumn: vwpurchasesforbi.FullDate
-	toColumn: Calendar.Date
+relationship AutoDetected_6e4bff81-ea92-489c-a125-8f15db602b67
+	fromColumn: fact_sales_order_detail.Product_SK
+	toColumn: dim_product.Product_SK
 
-relationship f225bc0e-9228-3e14-630f-c682c21084f4
-	fromColumn: vwsalesforbi.FullDate
-	toColumn: Calendar.Date
-
-relationship 20336b2f-c79a-4367-8822-0d6471e1fef3
-	joinOnDateBehavior: datePartOnly
-	fromColumn: fact_sales.OrderDate
-	toColumn: LocalDateTable_d4c2cfdb-84cc-4098-92d4-0c157e4f640c.Date
-
-relationship 91ed5cf0-0e5b-4285-943b-f22b1ff68a6e
-	joinOnDateBehavior: datePartOnly
-	fromColumn: fact_sales.DueDate
-	toColumn: LocalDateTable_3e1999ac-b696-4fb0-b7b2-d1deb093f3b2.Date
-
-relationship 1cfcc9db-9397-45dc-a23f-f79a18b55b50
-	joinOnDateBehavior: datePartOnly
-	fromColumn: fact_sales.ShipDate
-	toColumn: LocalDateTable_2a9484ee-32d9-46e8-817e-1252cdb2b139.Date
-
-relationship AutoDetected_18ec5a66-4c4d-4ccb-82b9-651ae9199918
-	fromColumn: fact_sales.OrderID
-	toColumn: vwsalesforbi.OrderID
-
-relationship AutoDetected_fd5ef5ed-6e00-409d-adee-948cccce2ddb
-	fromColumn: fact_sales.ProductID
-	toColumn: dim_product.ProductKey
-
-relationship AutoDetected_ac8489dc-8450-49d5-969a-14c40f19cee4
-	fromColumn: fact_sales.CustomerID
-	toColumn: dim_customer.CustomerID
-
-relationship 175dc211-d2ac-48d9-acea-4ea3e76b6961
-	joinOnDateBehavior: datePartOnly
-	fromColumn: clean_product.SellStartDate
-	toColumn: LocalDateTable_9464b8a6-dc86-42f8-bc0b-4845d1fcd6b6.Date
-
-relationship 4266cfaf-94d9-4643-a647-472b22931c2d
-	joinOnDateBehavior: datePartOnly
-	fromColumn: clean_product.SellEndDate
-	toColumn: LocalDateTable_4c3a2f9d-3398-40e2-bfd4-66aeddd3a570.Date
-
-relationship f6024a3c-612d-46ee-b031-8557bca30858
-	joinOnDateBehavior: datePartOnly
-	fromColumn: clean_sales_order_header.OrderDate
-	toColumn: LocalDateTable_e8c1d201-5c77-4df2-b1ed-0585f0060905.Date
-
-relationship cc4b0e55-eb84-44b4-af2e-3ca0208a93c0
-	joinOnDateBehavior: datePartOnly
-	fromColumn: clean_sales_order_header.DueDate
-	toColumn: LocalDateTable_cd8c3b0e-dc9b-4896-a6a4-fd057bb781f0.Date
-
-relationship 4504c3bf-c0d8-4c4e-8f26-bb6c0f23ae73
-	joinOnDateBehavior: datePartOnly
-	fromColumn: clean_sales_order_header.ShipDate
-	toColumn: LocalDateTable_586aa38b-10bb-4989-9e01-30f2537eab37.Date
-
-relationship 132c184d-9628-45af-92dc-dd5670bdddfb
-	joinOnDateBehavior: datePartOnly
-	fromColumn: clean_purchase_order.OrderDate
-	toColumn: LocalDateTable_2631bebe-74c9-4451-bf88-c369ca0c7292.Date
-
-relationship f1bba6bf-6918-4292-8e72-c64c18a41154
-	joinOnDateBehavior: datePartOnly
-	fromColumn: clean_purchase_order.ShipDate
-	toColumn: LocalDateTable_6842f7b4-4d75-4b9a-928b-766b7651d8a0.Date
-
-relationship AutoDetected_480fbac4-ae6d-43d1-95f6-74869d90dc14
+relationship 3d3abb92-0e29-714a-73bc-4bd278529ecb
 	crossFilteringBehavior: bothDirections
-	fromCardinality: one
-	fromColumn: clean_purchase_order.PurchaseOrderID
-	toColumn: vwpurchasesforbi.PurchaseOrderID
+	toCardinality: many
+	fromColumn: fact_sales_order.OrderID
+	toColumn: fact_sales_order_detail.OrderID
 
-relationship AutoDetected_12cf8a9b-76c0-4717-8934-b6a34f36b7f6
-	crossFilteringBehavior: bothDirections
-	fromCardinality: one
-	fromColumn: clean_product.ProductNumber
-	toColumn: dim_product.ProductNumber
+relationship 33805932-fd0a-1486-1e0e-1a96ed3a64b7
+	fromColumn: fact_sales_order.Location_SK
+	toColumn: dim_location.Location_SK
 
-relationship AutoDetected_3a829fbf-852e-4b6d-92ca-2354047a6a76
-	isActive: false
-	fromColumn: fact_sales.ProductID
-	toColumn: clean_product.ProductID
+relationship 66e769bd-25ad-666d-f36a-5f137c14fa12
+	fromColumn: fact_sales_order.OrderDate_SK
+	toColumn: dim_date.DateKey
 
-relationship AutoDetected_99a5fa53-c93f-4eb3-8fed-ff8f8da2196e
-	fromColumn: clean_product_inventory.ProductID
-	toColumn: clean_product.ProductID
+relationship 1370dc78-da9f-d400-f2b9-d000c603579a
+	fromColumn: fact_purchases.OrderDate_SK
+	toColumn: dim_date.DateKey
 
-relationship AutoDetected_66b25ad8-2e22-452b-9c8b-04522da8ee00
-	fromColumn: clean_sales_order_detail.ProductID
-	toColumn: clean_product.ProductID
-
-relationship AutoDetected_c08e7c67-189a-4e36-9cd5-0a2665a3fe93
-	crossFilteringBehavior: bothDirections
-	fromCardinality: one
-	fromColumn: clean_sales_customer.CustomerID
-	toColumn: dim_customer.CustomerID
-
-relationship AutoDetected_e29de359-e28c-4440-9cd6-4c991c74cda1
-	fromColumn: clean_sales_order_header.CustomerID
-	toColumn: dim_customer.CustomerID
-
-relationship AutoDetected_980427f0-182f-4fe9-87b7-fa0e8a25464f
-	fromColumn: fact_sales.TerritoryID
-	toColumn: clean_sales_territory.TerritoryID
-
-relationship AutoDetected_2fc26c1c-528b-4838-b403-20b43712316c
-	fromColumn: dim_location.TerritoryID
-	toColumn: clean_sales_territory.TerritoryID
-
-relationship AutoDetected_ad508d9c-f373-49cd-b709-727392f9b0c2
-	isActive: false
-	fromColumn: dim_customer.TerritoryID
-	toColumn: clean_sales_territory.TerritoryID
-
-relationship AutoDetected_43c852f8-3f04-4975-a102-863dca977bb1
-	isActive: false
-	fromColumn: clean_sales_customer.TerritoryID
-	toColumn: clean_sales_territory.TerritoryID
-
-relationship AutoDetected_6a9d51bd-f97c-4dc3-a53d-be9c82aa8f5f
-	fromColumn: clean_sales_order_header.TerritoryID
-	toColumn: clean_sales_territory.TerritoryID
-
-relationship AutoDetected_259cc1e7-be2b-4796-8fb3-51e469699e98
-	fromColumn: dim_customer.PersonID
-	toColumn: clean_person.PersonID
-
-relationship AutoDetected_6911d801-03f7-4ffb-a330-901f820554ad
-	isActive: false
-	fromColumn: clean_sales_customer.PersonID
-	toColumn: clean_person.PersonID
-
-relationship AutoDetected_8c24bbc4-b344-4762-8039-dd533081646d
-	fromColumn: clean_sales_order_detail.SalesOrderID
-	toColumn: clean_sales_order_header.SalesOrderID
+relationship AutoDetected_ef1c4524-62d6-4f2f-bfb0-6193bc93a0f5
+	fromColumn: fact_sales_order.Territory_SK
+	toColumn: dim_territory.Territory_SK
 
