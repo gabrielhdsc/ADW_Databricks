@@ -16,13 +16,12 @@ env/
 .pytest_cache/
 .mypy_cache/
 
-# Data files
+# Data files (Bloqueia dados brutos)
 *.csv
 *.tsv
 *.txt
 *.parquet
 *.delta
-*.json
 *.avro
 *.xml
 *.xls
@@ -32,9 +31,42 @@ env/
 *.tar
 *.tmp
 *.log
-/data/ # if you have a local data folder that should not be committed
 
-# MLflow (if tracking locally, not recommended for Databricks native MLflow)
+# -----------------------------------------------------------
+# REGRAS DE JSON (ADF vs PBI vs DATA/CACHE)
+# -----------------------------------------------------------
+# 1. Bloqueia TODOS os JSONs por padrão (garante que data/ e cache/ sejam ignorados)
+*.json
+
+# 2. Libera (Allowlist) JSONs do Azure Data Factory (ADF)
+# (Cobre tanto na raiz quanto em subpastas)
+!**/dataset/*.json
+!**/factory/*.json
+!**/linkedService/*.json
+!**/pipeline/*.json
+!**/trigger/*.json
+!**/integrationRuntime/*.json
+!**/dataFlow/*.json
+!**/ADF/**/*.json 
+
+# 3. Libera (Allowlist) JSONs de Estrutura do Power BI (PBIP)
+!**/*.Report/**/*.json
+!**/*.SemanticModel/**/*.json
+!**/*.pbip
+!**/PBI/**/*.json 
+
+# 4. Libera (Allowlist) de Estrutura do Databricks
+!**/ADB/**/*.json 
+
+# -----------------------------------------------------------
+
+# Pastas especificas de Dados e Cache para garantir
+/data/
+**/cache/
+**/.pbi/cache.abf
+**/.pbi/localSettings.json
+
+# MLflow
 mlruns/
 
 # IDE specific
@@ -45,7 +77,3 @@ mlruns/
 # OS generated files
 .DS_Store
 Thumbs.db
-
-# PBI
-**/.pbi/localSettings.json
-**/.pbi/cache.abf
