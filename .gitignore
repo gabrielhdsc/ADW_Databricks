@@ -2,7 +2,7 @@
 .ipynb_checkpoints/
 *.ipynb.py
 *.py.ipynb
-
+ 
 # Python specific
 __pycache__/
 *.pyc
@@ -15,7 +15,7 @@ env/
 *.egg-info/
 .pytest_cache/
 .mypy_cache/
-
+ 
 # Data files (Bloqueia dados brutos)
 *.csv
 *.tsv
@@ -31,13 +31,13 @@ env/
 *.tar
 *.tmp
 *.log
-
+ 
 # -----------------------------------------------------------
 # REGRAS DE JSON (ADF vs PBI vs DATA/CACHE)
 # -----------------------------------------------------------
 # 1. Bloqueia TODOS os JSONs por padrão (garante que data/ e cache/ sejam ignorados)
 *.json
-
+ 
 # 2. Libera (Allowlist) JSONs do Azure Data Factory (ADF)
 # (Cobre tanto na raiz quanto em subpastas)
 !**/dataset/*.json
@@ -47,33 +47,33 @@ env/
 !**/trigger/*.json
 !**/integrationRuntime/*.json
 !**/dataFlow/*.json
-!**/ADF/**/*.json 
-
+!**/ADF/**/*.json
+ 
 # 3. Libera (Allowlist) JSONs de Estrutura do Power BI (PBIP)
 !**/*.Report/**/*.json
 !**/*.SemanticModel/**/*.json
 !**/*.pbip
-!**/PBI/**/*.json 
-
+!**/PBI/**/*.json
+ 
 # 4. Libera (Allowlist) de Estrutura do Databricks
-!**/ADB/**/*.json 
-
+!**/ADB/**/*.json
+ 
 # -----------------------------------------------------------
-
+ 
 # Pastas especificas de Dados e Cache para garantir
 /data/
 **/cache/
 **/.pbi/cache.abf
 **/.pbi/localSettings.json
-
+ 
 # MLflow
 mlruns/
-
+ 
 # IDE specific
 .vscode/
 .idea/
 *.iml
-
+ 
 # OS generated files
 .DS_Store
 Thumbs.db
