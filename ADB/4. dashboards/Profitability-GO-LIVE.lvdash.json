@@ -1,0 +1,960 @@
+{
+  "datasets": [
+    {
+      "name": "6a8521d7",
+      "displayName": "vwgoliveprofitability",
+      "queryLines": [
+        "SELECT * FROM adventure_works_catalog.gold.vwgoliveprofitability"
+      ]
+    },
+    {
+      "name": "3a572859",
+      "displayName": "notprofitableproducts",
+      "queryLines": [
+        "SELECT\r\n",
+        "    ProductName,\r\n",
+        "    Category,\r\n",
+        "    SubCategory,\r\n",
+        "    Country,\r\n",
+        "    SUM(Revenue)        AS Revenue,\r\n",
+        "    SUM(Cost)           AS Cost,\r\n",
+        "    SUM(Profit)         AS Profit,\r\n",
+        "    AVG(ProfitMargin) AS AvgProfitMargin\r\n",
+        "FROM adventure_works_catalog.gold.vwgoliveprofitability\r\n",
+        "GROUP BY\r\n",
+        "    ProductName,\r\n",
+        "    Category,\r\n",
+        "    SubCategory,\r\n",
+        "    Country\r\n",
+        "HAVING AVG(ProfitMargin) < 0\r\n",
+        "ORDER BY\r\n",
+        "    AVG(ProfitMargin) ASC\r\n",
+        "LIMIT 10;\r\n"
+      ]
+    },
+    {
+      "name": "96d34c14",
+      "displayName": "revenueXcost",
+      "queryLines": [
+        "WITH max_year AS (\r\n",
+        "  SELECT MAX(Year) AS max_year\r\n",
+        "  FROM adventure_works_catalog.gold.vwgoliveprofitability\r\n",
+        ")\r\n",
+        "\r\n",
+        "SELECT\r\n",
+        "    ProductName,\r\n",
+        "    SUM(Revenue) AS TotalRevenue,\r\n",
+        "    SUM(Cost)    AS TotalCost\r\n",
+        "FROM adventure_works_catalog.gold.vwgoliveprofitability v\r\n",
+        "CROSS JOIN max_year m\r\n",
+        "WHERE v.Year >= m.max_year - 1   -- últimos 2 anos\r\n",
+        "GROUP BY ProductName\r\n",
+        "ORDER BY TotalRevenue DESC\r\n",
+        "LIMIT 10;\r\n"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "71be5c57",
+      "displayName": "Overview",
+      "layout": [
+        {
+          "widget": {
+            "name": "total-revenue",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "sum(Revenue)",
+                      "expression": "SUM(`Revenue`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(Revenue)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "fontSize": 24
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Revenue"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "total-cost",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "sum(Cost)",
+                      "expression": "SUM(`Cost`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(Cost)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "fontSize": 24
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Cost"
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 1,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "de8aae48",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "sum(Profit)",
+                      "expression": "SUM(`Profit`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "sum(Profit)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "fontSize": 24
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Total Profit"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 1,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "average-profit-margin",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "avg(ProfitMargin)",
+                      "expression": "AVG(`ProfitMargin`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg(ProfitMargin)",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "style": {
+                    "fontSize": 24
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average Profit Margin"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 1,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue-vs-profit-trend-over-time",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "monthly(OrderDate)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `OrderDate`)"
+                    },
+                    {
+                      "name": "sum(Revenue)",
+                      "expression": "SUM(`Revenue`)"
+                    },
+                    {
+                      "name": "sum(Profit)",
+                      "expression": "SUM(`Profit`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(OrderDate)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "labelAngle": 0
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(Revenue)"
+                    },
+                    {
+                      "fieldName": "sum(Profit)"
+                    }
+                  ],
+                  "axis": {
+                    "hideTitle": true
+                  }
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue VS Profit - Trend Over Time"
+              },
+              "mark": {
+                "colors": [
+                  "#62C654",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 4,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "products-with-loss",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "3a572859",
+                  "fields": [
+                    {
+                      "name": "ProductName",
+                      "expression": "`ProductName`"
+                    },
+                    {
+                      "name": "Category",
+                      "expression": "`Category`"
+                    },
+                    {
+                      "name": "SubCategory",
+                      "expression": "`SubCategory`"
+                    },
+                    {
+                      "name": "Country",
+                      "expression": "`Country`"
+                    },
+                    {
+                      "name": "Cost",
+                      "expression": "`Cost`"
+                    },
+                    {
+                      "name": "Revenue",
+                      "expression": "`Revenue`"
+                    },
+                    {
+                      "name": "Profit",
+                      "expression": "`Profit`"
+                    },
+                    {
+                      "name": "AvgProfitMargin",
+                      "expression": "`AvgProfitMargin`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "ProductName"
+                  },
+                  {
+                    "fieldName": "Category"
+                  },
+                  {
+                    "fieldName": "SubCategory"
+                  },
+                  {
+                    "fieldName": "Country"
+                  },
+                  {
+                    "fieldName": "Cost"
+                  },
+                  {
+                    "fieldName": "Revenue"
+                  },
+                  {
+                    "fieldName": "Profit"
+                  },
+                  {
+                    "fieldName": "AvgProfitMargin"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "title": "Products with Loss",
+                "description": ""
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 12,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "revenue-cost",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "96d34c14",
+                  "fields": [
+                    {
+                      "name": "ProductName",
+                      "expression": "`ProductName`"
+                    },
+                    {
+                      "name": "sum(TotalRevenue)",
+                      "expression": "SUM(`TotalRevenue`)"
+                    },
+                    {
+                      "name": "sum(TotalCost)",
+                      "expression": "SUM(`TotalCost`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "ProductName",
+                  "axis": {
+                    "labelAngle": 45,
+                    "hideTitle": true,
+                    "hideLabels": true
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(TotalRevenue)"
+                    },
+                    {
+                      "fieldName": "sum(TotalCost)"
+                    }
+                  ],
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    },
+                    "hideGroupSeparator": false
+                  },
+                  "axis": {
+                    "hideLabels": true,
+                    "hideGrid": false,
+                    "hideTitle": true
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Revenue vs Cost for Top 10 Products by Revenue (Last 2 Years)"
+              },
+              "mark": {
+                "colors": [
+                  "#83CC65",
+                  "#4B8E42",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ],
+                "layout": "group"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 4,
+            "height": 5
+          }
+        },
+        {
+          "widget": {
+            "name": "average-profit-margin-territory",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "avg(ProfitMargin)",
+                      "expression": "AVG(`ProfitMargin`)"
+                    },
+                    {
+                      "name": "SalesTerritory",
+                      "expression": "`SalesTerritory`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "avg(ProfitMargin)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "SalesTerritory",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": false
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average Profit Margin by Territory"
+              },
+              "mark": {
+                "colors": [
+                  "#3AA732",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 1,
+            "width": 2,
+            "height": 7
+          }
+        },
+        {
+          "widget": {
+            "name": "average-profit-margin-category-1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "avg(ProfitMargin)",
+                      "expression": "AVG(`ProfitMargin`)"
+                    },
+                    {
+                      "name": "Category",
+                      "expression": "`Category`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "avg(ProfitMargin)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "Category",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                }
+              },
+              "frame": {
+                "title": "Average Profit Margin by Category",
+                "showTitle": true
+              },
+              "mark": {
+                "colors": [
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 2
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 8,
+            "width": 2,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "19b7bccb",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"font-size: 24px;\">**ADVENTURE WORKS - PROFITABILITY**</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    },
+    {
+      "name": "c5dce28e",
+      "displayName": "Global Filters",
+      "layout": [
+        {
+          "widget": {
+            "name": "p-year",
+            "queries": [
+              {
+                "name": "dashboards/01f0fc86d620126bab0f7188e56c4cb3/datasets/01f0fd06e20617089dd7a4bd45e33338_Year",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "Year",
+                      "expression": "`Year`"
+                    },
+                    {
+                      "name": "Year_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Year",
+                    "queryName": "dashboards/01f0fc86d620126bab0f7188e56c4cb3/datasets/01f0fd06e20617089dd7a4bd45e33338_Year"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "P Year"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 1,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "0a8c7fcb",
+            "queries": [
+              {
+                "name": "dashboards/01f0fc86d620126bab0f7188e56c4cb3/datasets/01f0fd06e20617089dd7a4bd45e33338_TerritoryGroup",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "TerritoryGroup",
+                      "expression": "`TerritoryGroup`"
+                    },
+                    {
+                      "name": "TerritoryGroup_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "TerritoryGroup",
+                    "queryName": "dashboards/01f0fc86d620126bab0f7188e56c4cb3/datasets/01f0fd06e20617089dd7a4bd45e33338_TerritoryGroup"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 1,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_GLOBAL_FILTERS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "canvasBackgroundColor": {
+        "light": "#0B300B",
+        "dark": "#081C06"
+      },
+      "widgetBackgroundColor": {
+        "light": "#051F05",
+        "dark": "#071603"
+      },
+      "widgetBorderColor": {
+        "dark": "#092106"
+      },
+      "fontColor": {
+        "light": "#FFFFFF",
+        "dark": "#CBE7C1"
+      },
+      "selectionColor": {
+        "light": "#2272B4",
+        "dark": "#8ACAFF"
+      },
+      "visualizationColors": [
+        "#077A9D",
+        "#FFAB00",
+        "#00A972",
+        "#FF3621",
+        "#8BCAE7",
+        "#AB4057",
+        "#99DDB4",
+        "#FCA4A1",
+        "#919191",
+        "#BF7080"
+      ],
+      "widgetHeaderAlignment": "LEFT"
+    },
+    "applyModeEnabled": false
+  }
+}

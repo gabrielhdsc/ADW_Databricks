@@ -27,6 +27,7 @@ df_dim_customer = spark.table("adventure_works_catalog.silver.dim_customer")
 df_dim_date = spark.table("adventure_works_catalog.silver.dim_date")
 df_dim_currency = spark.table("adventure_works_catalog.silver.dim_currency")
 df_dim_location = spark.table("adventure_works_catalog.silver.dim_location")
+df_dim_territory = spark.table("adventure_works_catalog.silver.dim_territory")
 
 
 # COMMAND ----------
@@ -42,6 +43,7 @@ CREATE TABLE IF NOT EXISTS adventure_works_catalog.silver.fact_sales_order (
     ShipDate_SK INT,
     Currency_SK INT,
     Location_SK INT,
+    Territory_SK INT,
  
     SubTotal DECIMAL(19,4),
     ShippingCost DECIMAL(19,4),
@@ -68,6 +70,10 @@ df_fact_sales_order_base = (
  
     .join(df_dim_currency.alias("cur"),
           F.col("sh.CurrencyRateID") == F.col("cur.CurrencyRateID"), "left")
+    
+    .join(df_dim_territory.alias("t"),
+        F.col("sh.TerritoryID") == F.col("t.TerritoryID"), "left")
+
  
     # Select Final
     .select(
@@ -79,6 +85,7 @@ df_fact_sales_order_base = (
         F.coalesce(F.col("sd.DateKey"), F.lit(-1)).alias("ShipDate_SK"),
         F.coalesce(F.col("cur.Currency_SK"), F.lit(-1)).alias("Currency_SK"),
         F.coalesce(F.col("l.Location_SK"), F.lit(-1)).alias("Location_SK"),
+        F.coalesce(F.col("t.Territory_SK"), F.lit(-1)).alias("Territory_SK"),
  
         F.col("sh.SubTotal"),
         F.col("sh.Freight").alias("ShippingCost"),
@@ -110,6 +117,7 @@ WHEN MATCHED AND (
     OR NOT (tgt.ShipDate_SK      <=> src.ShipDate_SK)
     OR NOT (tgt.Currency_SK      <=> src.Currency_SK)
     OR NOT (tgt.Location_SK      <=> src.Location_SK)
+    OR NOT (tgt.Territory_SK     <=> src.Territory_SK)
     OR NOT (tgt.SubTotal         <=> src.SubTotal)
     OR NOT (tgt.ShippingCost     <=> src.ShippingCost)
     OR NOT (tgt.TaxAmt           <=> src.TaxAmt)
@@ -121,6 +129,7 @@ THEN UPDATE SET
     tgt.ShipDate_SK     = src.ShipDate_SK,
     tgt.Currency_SK     = src.Currency_SK,
     tgt.Location_SK     = src.Location_SK,
+    tgt.Territory_SK    = src.Territory_SK,
     tgt.SubTotal        = src.SubTotal,
     tgt.ShippingCost    = src.ShippingCost,
     tgt.TaxAmt          = src.TaxAmt
@@ -134,6 +143,7 @@ WHEN NOT MATCHED THEN
     ShipDate_SK,
     Currency_SK,
     Location_SK,
+    Territory_SK,
     SubTotal,
     ShippingCost,
     TaxAmt
@@ -146,6 +156,7 @@ WHEN NOT MATCHED THEN
     src.ShipDate_SK,
     src.Currency_SK,
     src.Location_SK,
+    src.Territory_SK,
     src.SubTotal,
     src.ShippingCost,
     src.TaxAmt
@@ -161,6 +172,7 @@ fact_sales_order_columns = {
     "ShipDate_SK": "Chave da data de envio do pedido de venda",
     "Currency_SK": "Chave substituta da taxa de câmbio associada ao pedido",
     "Location_SK": "Chave substituta da localização de envio do pedido",
+    "Territory_SK": "Chave substituta do território de vendas associado ao pedido",
     "SubTotal": "Subtotal do pedido (soma dos itens, sem impostos e frete)",
     "ShippingCost": "Custo de frete do pedido de venda",
     "TaxAmt": "Valor de imposto aplicado ao pedido de venda"
