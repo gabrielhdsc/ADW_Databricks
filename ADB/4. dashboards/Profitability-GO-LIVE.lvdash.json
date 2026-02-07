@@ -11,46 +11,16 @@
       "name": "3a572859",
       "displayName": "notprofitableproducts",
       "queryLines": [
-        "SELECT\r\n",
-        "    ProductName,\r\n",
-        "    Category,\r\n",
-        "    SubCategory,\r\n",
-        "    Country,\r\n",
-        "    SUM(Revenue)        AS Revenue,\r\n",
-        "    SUM(Cost)           AS Cost,\r\n",
-        "    SUM(Profit)         AS Profit,\r\n",
-        "    AVG(ProfitMargin) AS AvgProfitMargin\r\n",
-        "FROM adventure_works_catalog.gold.vwgoliveprofitability\r\n",
-        "GROUP BY\r\n",
-        "    ProductName,\r\n",
-        "    Category,\r\n",
-        "    SubCategory,\r\n",
-        "    Country\r\n",
-        "HAVING AVG(ProfitMargin) < 0\r\n",
-        "ORDER BY\r\n",
-        "    AVG(ProfitMargin) ASC\r\n",
-        "LIMIT 10;\r\n"
+        "SELECT *\r\n",
+        "FROM adventure_works_catalog.gold.vwprofitabilitynotprofprod"
       ]
     },
     {
       "name": "96d34c14",
       "displayName": "revenueXcost",
       "queryLines": [
-        "WITH max_year AS (\r\n",
-        "  SELECT MAX(Year) AS max_year\r\n",
-        "  FROM adventure_works_catalog.gold.vwgoliveprofitability\r\n",
-        ")\r\n",
-        "\r\n",
-        "SELECT\r\n",
-        "    ProductName,\r\n",
-        "    SUM(Revenue) AS TotalRevenue,\r\n",
-        "    SUM(Cost)    AS TotalCost\r\n",
-        "FROM adventure_works_catalog.gold.vwgoliveprofitability v\r\n",
-        "CROSS JOIN max_year m\r\n",
-        "WHERE v.Year >= m.max_year - 1   -- últimos 2 anos\r\n",
-        "GROUP BY ProductName\r\n",
-        "ORDER BY TotalRevenue DESC\r\n",
-        "LIMIT 10;\r\n"
+        "SELECT *\r\n",
+        "FROM adventure_works_catalog.gold.vwprofitabilityrevenuexcost"
       ]
     }
   ],
@@ -271,16 +241,16 @@
                   "datasetName": "6a8521d7",
                   "fields": [
                     {
+                      "name": "Country",
+                      "expression": "`Country`"
+                    },
+                    {
                       "name": "monthly(OrderDate)",
                       "expression": "DATE_TRUNC(\"MONTH\", `OrderDate`)"
                     },
                     {
                       "name": "sum(Revenue)",
                       "expression": "SUM(`Revenue`)"
-                    },
-                    {
-                      "name": "sum(Profit)",
-                      "expression": "SUM(`Profit`)"
                     }
                   ],
                   "disaggregated": false
@@ -289,47 +259,13 @@
             ],
             "spec": {
               "version": 3,
-              "widgetType": "line",
-              "encodings": {
-                "x": {
-                  "fieldName": "monthly(OrderDate)",
-                  "axis": {
-                    "hideTitle": true,
-                    "hideLabels": false,
-                    "labelAngle": 0
-                  },
-                  "scale": {
-                    "type": "categorical"
-                  }
-                },
-                "y": {
-                  "scale": {
-                    "type": "quantitative"
-                  },
-                  "fields": [
-                    {
-                      "fieldName": "sum(Revenue)"
-                    },
-                    {
-                      "fieldName": "sum(Profit)"
-                    }
-                  ],
-                  "axis": {
-                    "hideTitle": true
-                  }
-                }
-              },
               "frame": {
                 "showTitle": true,
-                "title": "Revenue VS Profit - Trend Over Time"
+                "title": "Revenue - Trend Over Time"
               },
               "mark": {
                 "colors": [
                   "#62C654",
-                  {
-                    "themeColorType": "visualizationColors",
-                    "position": 2
-                  },
                   {
                     "themeColorType": "visualizationColors",
                     "position": 3
@@ -363,14 +299,58 @@
                     "position": 10
                   }
                 ]
+              },
+              "widgetType": "area",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(OrderDate)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "labelAngle": 0
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Revenue)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Country",
+                  "legend": {
+                    "position": "right",
+                    "hide": false,
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Germany",
+                        "color": "#00FFBC"
+                      },
+                      {
+                        "value": "United States",
+                        "color": "#FF8000"
+                      }
+                    ]
+                  }
+                }
               }
             }
           },
           "position": {
-            "x": 0,
-            "y": 3,
-            "width": 4,
-            "height": 4
+            "x": 3,
+            "y": 7,
+            "width": 3,
+            "height": 6
           }
         },
         {
@@ -421,6 +401,12 @@
             ],
             "spec": {
               "version": 2,
+              "frame": {
+                "showTitle": true,
+                "showDescription": false,
+                "title": "Products with Loss",
+                "description": ""
+              },
               "widgetType": "table",
               "encodings": {
                 "columns": [
@@ -446,22 +432,24 @@
                     "fieldName": "Profit"
                   },
                   {
-                    "fieldName": "AvgProfitMargin"
+                    "fieldName": "AvgProfitMargin",
+                    "format": {
+                      "type": "number-percent",
+                      "decimalPlaces": {
+                        "type": "exact",
+                        "places": 2
+                      },
+                      "hideGroupSeparator": true
+                    }
                   }
                 ]
-              },
-              "frame": {
-                "showTitle": true,
-                "showDescription": false,
-                "title": "Products with Loss",
-                "description": ""
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 12,
-            "width": 6,
+            "y": 13,
+            "width": 4,
             "height": 4
           }
         },
@@ -475,8 +463,8 @@
                   "datasetName": "96d34c14",
                   "fields": [
                     {
-                      "name": "ProductName",
-                      "expression": "`ProductName`"
+                      "name": "ProductShortName",
+                      "expression": "`ProductShortName`"
                     },
                     {
                       "name": "sum(TotalRevenue)",
@@ -493,53 +481,6 @@
             ],
             "spec": {
               "version": 3,
-              "widgetType": "bar",
-              "encodings": {
-                "x": {
-                  "fieldName": "ProductName",
-                  "axis": {
-                    "labelAngle": 45,
-                    "hideTitle": true,
-                    "hideLabels": true
-                  },
-                  "scale": {
-                    "type": "categorical"
-                  }
-                },
-                "y": {
-                  "scale": {
-                    "type": "quantitative"
-                  },
-                  "fields": [
-                    {
-                      "fieldName": "sum(TotalRevenue)"
-                    },
-                    {
-                      "fieldName": "sum(TotalCost)"
-                    }
-                  ],
-                  "format": {
-                    "type": "number-plain",
-                    "abbreviation": "compact",
-                    "decimalPlaces": {
-                      "type": "max",
-                      "places": 2
-                    },
-                    "significantFigures": {
-                      "type": "all"
-                    },
-                    "hideGroupSeparator": false
-                  },
-                  "axis": {
-                    "hideLabels": true,
-                    "hideGrid": false,
-                    "hideTitle": true
-                  }
-                },
-                "label": {
-                  "show": false
-                }
-              },
               "frame": {
                 "showTitle": true,
                 "title": "Revenue vs Cost for Top 10 Products by Revenue (Last 2 Years)"
@@ -582,14 +523,68 @@
                   }
                 ],
                 "layout": "group"
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "ProductShortName",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "labelAngle": 0
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "natural-order"
+                    }
+                  }
+                },
+                "y": {
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "fields": [
+                    {
+                      "fieldName": "sum(TotalRevenue)"
+                    },
+                    {
+                      "fieldName": "sum(TotalCost)"
+                    }
+                  ],
+                  "axis": {
+                    "hideLabels": true,
+                    "hideGrid": true,
+                    "hideTitle": true
+                  },
+                  "format": {
+                    "type": "number-plain",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "all"
+                    },
+                    "significantFigures": {
+                      "type": "all"
+                    },
+                    "hideGroupSeparator": false
+                  }
+                },
+                "color": {
+                  "legend": {
+                    "position": "top"
+                  }
+                },
+                "label": {
+                  "show": false
+                }
               }
             }
           },
           "position": {
             "x": 0,
-            "y": 7,
+            "y": 3,
             "width": 4,
-            "height": 5
+            "height": 4
           }
         },
         {
@@ -616,33 +611,6 @@
             ],
             "spec": {
               "version": 3,
-              "widgetType": "bar",
-              "encodings": {
-                "x": {
-                  "fieldName": "avg(ProfitMargin)",
-                  "axis": {
-                    "hideTitle": true
-                  },
-                  "scale": {
-                    "type": "quantitative"
-                  }
-                },
-                "y": {
-                  "fieldName": "SalesTerritory",
-                  "axis": {
-                    "hideTitle": true
-                  },
-                  "scale": {
-                    "type": "categorical",
-                    "sort": {
-                      "by": "x-reversed"
-                    }
-                  }
-                },
-                "label": {
-                  "show": false
-                }
-              },
               "frame": {
                 "showTitle": true,
                 "title": "Average Profit Margin by Territory"
@@ -687,6 +655,40 @@
                     "position": 10
                   }
                 ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "avg(ProfitMargin)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "SalesTerritory",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                },
+                "label": {
+                  "show": false
+                }
               }
             }
           },
@@ -694,7 +696,7 @@
             "x": 4,
             "y": 1,
             "width": 2,
-            "height": 7
+            "height": 6
           }
         },
         {
@@ -721,30 +723,6 @@
             ],
             "spec": {
               "version": 3,
-              "widgetType": "bar",
-              "encodings": {
-                "x": {
-                  "fieldName": "avg(ProfitMargin)",
-                  "axis": {
-                    "hideTitle": true
-                  },
-                  "scale": {
-                    "type": "quantitative"
-                  }
-                },
-                "y": {
-                  "fieldName": "Category",
-                  "axis": {
-                    "hideTitle": true
-                  },
-                  "scale": {
-                    "type": "categorical",
-                    "sort": {
-                      "by": "x-reversed"
-                    }
-                  }
-                }
-              },
               "frame": {
                 "title": "Average Profit Margin by Category",
                 "showTitle": true
@@ -792,12 +770,43 @@
                     "position": 10
                   }
                 ]
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "avg(ProfitMargin)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "Category",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "sort": {
+                      "by": "x-reversed"
+                    }
+                  }
+                }
               }
             }
           },
           "position": {
             "x": 4,
-            "y": 8,
+            "y": 13,
             "width": 2,
             "height": 4
           }
@@ -816,6 +825,128 @@
             "y": 0,
             "width": 6,
             "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "f61a43c5",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "6a8521d7",
+                  "fields": [
+                    {
+                      "name": "Country",
+                      "expression": "`Country`"
+                    },
+                    {
+                      "name": "monthly(OrderDate)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `OrderDate`)"
+                    },
+                    {
+                      "name": "sum(Profit)",
+                      "expression": "SUM(`Profit`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Profit - Trend Over Time"
+              },
+              "mark": {
+                "colors": [
+                  "#62C654",
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 3
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 4
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 5
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 6
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 7
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 8
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 9
+                  },
+                  {
+                    "themeColorType": "visualizationColors",
+                    "position": 10
+                  }
+                ]
+              },
+              "widgetType": "area",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(OrderDate)",
+                  "axis": {
+                    "hideTitle": true,
+                    "hideLabels": false,
+                    "labelAngle": 0
+                  },
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "sum(Profit)",
+                  "axis": {
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "Country",
+                  "legend": {
+                    "position": "right",
+                    "hide": false,
+                    "hideTitle": true
+                  },
+                  "scale": {
+                    "type": "categorical",
+                    "mappings": [
+                      {
+                        "value": "Germany",
+                        "color": "#00FFBC"
+                      },
+                      {
+                        "value": "United States",
+                        "color": "#FF8000"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 7,
+            "width": 3,
+            "height": 6
           }
         }
       ],
