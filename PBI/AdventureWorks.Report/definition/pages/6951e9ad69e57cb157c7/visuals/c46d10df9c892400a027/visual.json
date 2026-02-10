@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "c46d10df9c892400a027",
   "position": {
-    "x": 7.2045028142589125,
-    "y": 12.007504690431521,
+    "x": 12.413793103448276,
+    "y": 95.763546798029552,
     "z": 2000,
-    "height": 45.628517823639775,
-    "width": 45.628517823639775,
-    "tabOrder": 2000
+    "height": 45.221674876847288,
+    "width": 46.108374384236456,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "actionButton",
@@ -39,7 +39,7 @@
                 "name": {
                   "expr": {
                     "Literal": {
-                      "Value": "'filtro (3).png'"
+                      "Value": "'slicer_verde.png'"
                     }
                   }
                 },
@@ -48,7 +48,7 @@
                     "ResourcePackageItem": {
                       "PackageName": "RegisteredResources",
                       "PackageType": 1,
-                      "ItemName": "filtro_(3)8304592882922524.png"
+                      "ItemName": "slicer_verde9059666491922223.png"
                     }
                   }
                 },
@@ -84,7 +84,7 @@
                 "name": {
                   "expr": {
                     "Literal": {
-                      "Value": "'filter.png'"
+                      "Value": "'slicer_amarelo.png'"
                     }
                   }
                 },
@@ -93,7 +93,7 @@
                     "ResourcePackageItem": {
                       "PackageName": "RegisteredResources",
                       "PackageType": 1,
-                      "ItemName": "filter09960658404100564.png"
+                      "ItemName": "slicer_amarelo9930188937483347.png"
                     }
                   }
                 },
@@ -148,6 +148,26 @@
               "expr": {
                 "Literal": {
                   "Value": "'74b381592d138d3c1e56'"
+                }
+              }
+            },
+            "tooltip": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Go to Slicers menu.'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Slicer Button'"
                 }
               }
             }

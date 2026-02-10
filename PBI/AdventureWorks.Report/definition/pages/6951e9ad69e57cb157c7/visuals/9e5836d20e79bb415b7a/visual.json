@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "9e5836d20e79bb415b7a",
   "position": {
-    "x": 769.84763432237366,
-    "y": 163.20769847634321,
-    "z": 8000,
-    "height": 320.25661587810743,
-    "width": 502.96712109061747,
-    "tabOrder": 8000
+    "x": 769.65517241379314,
+    "y": 145.41871921182266,
+    "z": 4000,
+    "height": 320.98522167487687,
+    "width": 491.23152709359607,
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "clusteredBarChart",
@@ -405,6 +405,37 @@
             }
           }
         }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B4430'"
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true
@@ -426,77 +457,6 @@
         "type": "TopN",
         "howCreated": "User",
         "isLockedInViewMode": true
-      },
-      {
-        "name": "570fa6115f23ae20cf14",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_product"
-                  }
-                },
-                "Hierarchy": "ProductName Hierarchy"
-              }
-            },
-            "Level": "ProductCategory"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "0edc1308414871707248",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_product"
-                  }
-                },
-                "Hierarchy": "ProductName Hierarchy"
-              }
-            },
-            "Level": "ProductSubCategoy"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "7a401141da1913787f35",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_product"
-                  }
-                },
-                "Hierarchy": "ProductName Hierarchy"
-              }
-            },
-            "Level": "ProductName"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "ae3edef7377d37c71b8c",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": ".SoldItem'sVolume"
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

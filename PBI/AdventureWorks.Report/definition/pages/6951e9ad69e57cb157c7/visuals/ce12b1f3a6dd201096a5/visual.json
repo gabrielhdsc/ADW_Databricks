@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "ce12b1f3a6dd201096a5",
   "position": {
-    "x": 1034.7783251231526,
+    "x": 1021.4778325123153,
     "y": 513.39901477832518,
-    "z": 5000,
+    "z": 2000,
     "height": 206.60098522167488,
-    "width": 237.63546798029557,
-    "tabOrder": 5000
+    "width": 250.935960591133,
+    "tabOrder": 1000
   },
   "visual": {
     "visualType": "kpi",
@@ -98,7 +98,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Monthly Revenue'"
+                  "Value": "'Last Month Sales Revenue'"
                 }
               }
             },
@@ -106,6 +106,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B4430'"
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
                 }
               }
             }

@@ -53,7 +53,7 @@ table _Measures
 
 	measure '.TotalProfit' = ```
 			
-			[SOSubTotalValue] - [PURSubTotalValue]
+			[SODLineTotalValue] - [PURSubTotalValue]
 			
 			```
 		formatString: \$#,0.00;(\$#,0.00);\$#,0.00

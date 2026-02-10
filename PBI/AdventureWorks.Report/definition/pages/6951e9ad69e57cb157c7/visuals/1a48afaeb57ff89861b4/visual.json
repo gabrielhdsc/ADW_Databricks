@@ -4,10 +4,10 @@
   "position": {
     "x": 0,
     "y": 0,
-    "z": 11000,
+    "z": 7000,
     "height": 720,
     "width": 203,
-    "tabOrder": 12000
+    "tabOrder": 10000
   },
   "visualGroup": {
     "displayName": "Open Nav",

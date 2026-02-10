@@ -6,12 +6,6 @@ relationship AutoDetected_6e4bff81-ea92-489c-a125-8f15db602b67
 	fromColumn: fact_sales_order_detail.Product_SK
 	toColumn: dim_product.Product_SK
 
-relationship 3d3abb92-0e29-714a-73bc-4bd278529ecb
-	crossFilteringBehavior: bothDirections
-	toCardinality: many
-	fromColumn: fact_sales_order.OrderID
-	toColumn: fact_sales_order_detail.OrderID
-
 relationship 33805932-fd0a-1486-1e0e-1a96ed3a64b7
 	fromColumn: fact_sales_order.Location_SK
 	toColumn: dim_location.Location_SK
@@ -27,4 +21,8 @@ relationship 1370dc78-da9f-d400-f2b9-d000c603579a
 relationship AutoDetected_ef1c4524-62d6-4f2f-bfb0-6193bc93a0f5
 	fromColumn: fact_sales_order.Territory_SK
 	toColumn: dim_territory.Territory_SK
+
+relationship 77f711b9-d058-3ac7-5d7d-955fd18f0421
+	fromColumn: fact_sales_order_detail.OrderID
+	toColumn: fact_sales_order.OrderID
 

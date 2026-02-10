@@ -3,105 +3,68 @@
   "name": "07082f46dbbbf0fbc766",
   "position": {
     "x": 7.9802955665024635,
-    "y": 133.00492610837438,
+    "y": 294.384236453202,
     "z": 1000,
-    "height": 45.221674876847288,
-    "width": 44.334975369458128,
-    "tabOrder": 10001
+    "height": 51.428571428571431,
+    "width": 48.768472906403943,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "actionButton",
     "objects": {
-      "icon": [
+      "outline": [
         {
           "properties": {
-            "shapeType": {
+            "show": {
               "expr": {
                 "Literal": {
-                  "Value": "'information'"
-                }
-              }
-            },
-            "lineColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 0,
-                      "Percent": 0
-                    }
-                  }
-                }
-              }
-            },
-            "image": {
-              "image": {
-                "name": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "''"
-                    }
-                  }
-                },
-                "url": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "''"
-                    }
-                  }
+                  "Value": "false"
                 }
               }
             }
-          },
-          "selector": {
-            "id": "default"
           }
-        },
+        }
+      ],
+      "glow": [
         {
           "properties": {
-            "lineColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#11C5E4'"
-                    }
-                  }
-                }
-              }
-            },
-            "image": {
-              "image": {
-                "name": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'data-analytics.png'"
-                    }
-                  }
-                },
-                "url": {
-                  "expr": {
-                    "ResourcePackageItem": {
-                      "PackageName": "RegisteredResources",
-                      "PackageType": 1,
-                      "ItemName": "data-analytics24828121665081104.png"
-                    }
-                  }
-                },
-                "scaling": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'Normal'"
-                    }
-                  }
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
-          },
-          "selector": {
-            "id": "hover"
           }
-        },
+        }
+      ],
+      "shadow": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "fill": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "icon": [
         {
           "properties": {
             "show": {
@@ -121,14 +84,20 @@
                   "Value": "'information'"
                 }
               }
-            },
+            }
+          },
+          "selector": {
+            "id": "disabled"
+          }
+        },
+        {
+          "properties": {
             "lineColor": {
               "solid": {
                 "color": {
                   "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 0,
-                      "Percent": -0.6
+                    "Literal": {
+                      "Value": "'#E28D2B'"
                     }
                   }
                 }
@@ -136,60 +105,32 @@
             }
           },
           "selector": {
-            "id": "disabled"
-          }
-        }
-      ],
-      "fill": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "outline": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "text": [
-        {
-          "properties": {
-            "show": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
+            "id": "hover"
           }
         },
         {
           "properties": {
-            "text": {
+            "lineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B4430'"
+                    }
+                  }
+                }
+              }
+            },
+            "shapeType": {
               "expr": {
                 "Literal": {
-                  "Value": "''"
+                  "Value": "'information'"
                 }
               }
             }
           },
           "selector": {
-            "id": "disabled"
+            "id": "default"
           }
         }
       ]
@@ -244,6 +185,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'Go to Drill Down Breakdown'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Drill Button'"
                 }
               }
             }

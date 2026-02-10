@@ -4,10 +4,10 @@
   "position": {
     "x": 769.65517241379314,
     "y": 513.39901477832518,
-    "z": 9000,
+    "z": 5000,
     "height": 206.60098522167488,
-    "width": 237.63546798029557,
-    "tabOrder": 9000
+    "width": 260.68965517241378,
+    "tabOrder": 4000
   },
   "visual": {
     "visualType": "kpi",
@@ -98,7 +98,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Monthly Sales Volume'"
+                  "Value": "'Last Month Sales Volume'"
                 }
               }
             },
@@ -106,6 +106,37 @@
               "expr": {
                 "Literal": {
                   "Value": "'center'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B4430'"
+                    }
+                  }
+                }
+              }
+            },
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
                 }
               }
             }

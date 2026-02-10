@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "4d6578eeaae872a7923e",
   "position": {
-    "x": 59.534883720930232,
-    "y": 75.95829991980753,
-    "z": 1000,
-    "height": 643.59262229350441,
-    "width": 1220.4651162790697,
+    "x": 80.6896551724138,
+    "y": 76.256157635467986,
+    "z": 0,
+    "height": 642.85714285714289,
+    "width": 1186.4039408866995,
     "tabOrder": 1000
   },
   "visual": {
@@ -179,7 +179,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#E28D2B'"
+                      "Value": "'#326C49'"
                     }
                   }
                 }
@@ -252,83 +252,21 @@
             }
           }
         }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "3f45e421006375a1ee1c",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_location"
-                  }
-                },
-                "Hierarchy": "CountryName Hierarchy"
-              }
-            },
-            "Level": "CountryName"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "99d07fb09075594a0c21",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_location"
-                  }
-                },
-                "Hierarchy": "CountryName Hierarchy"
-              }
-            },
-            "Level": "StateProvinceName"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "754e02888f608517851f",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_location"
-                  }
-                },
-                "Hierarchy": "CountryName Hierarchy"
-              }
-            },
-            "Level": "City"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "078fbe910481980d271e",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": ".SoldItem'sVolume"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

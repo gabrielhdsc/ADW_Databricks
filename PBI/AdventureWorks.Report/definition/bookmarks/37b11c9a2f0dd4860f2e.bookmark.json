@@ -172,46 +172,6 @@
               ]
             }
           },
-          "27ac5d8114c29a86ff46": {
-            "filters": {
-              "byExpr": [
-                {
-                  "name": "f1ffccebdacd6d70366a",
-                  "type": "Advanced",
-                  "expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": ".SoldItem'sVolume"
-                    }
-                  },
-                  "howCreated": 0
-                }
-              ]
-            },
-            "singleVisual": {
-              "visualType": "cardVisual",
-              "objects": {},
-              "orderBy": [
-                {
-                  "Direction": 2,
-                  "Expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": ".SoldItem'sVolume"
-                    }
-                  }
-                }
-              ]
-            }
-          },
           "5496623359abdc85d246": {
             "filters": {
               "byExpr": [
@@ -341,46 +301,6 @@
               }
             }
           },
-          "55d9bdc0ed815536a7f9": {
-            "filters": {
-              "byExpr": [
-                {
-                  "name": "f6808ea1687425ffe3a8",
-                  "type": "Advanced",
-                  "expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "PURSubTotalValue"
-                    }
-                  },
-                  "howCreated": 0
-                }
-              ]
-            },
-            "singleVisual": {
-              "visualType": "cardVisual",
-              "objects": {},
-              "orderBy": [
-                {
-                  "Direction": 2,
-                  "Expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": "PURSubTotalValue"
-                    }
-                  }
-                }
-              ]
-            }
-          },
           "58bf5f839f97dd985970": {
             "singleVisual": {
               "visualType": "image",
@@ -455,46 +375,6 @@
             "singleVisual": {
               "visualType": "kpi",
               "objects": {}
-            }
-          },
-          "90d603bdd161d9a65a65": {
-            "filters": {
-              "byExpr": [
-                {
-                  "name": "2bd2fb2c638122ed031c",
-                  "type": "Advanced",
-                  "expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": ".TotalProfit"
-                    }
-                  },
-                  "howCreated": 0
-                }
-              ]
-            },
-            "singleVisual": {
-              "visualType": "cardVisual",
-              "objects": {},
-              "orderBy": [
-                {
-                  "Direction": 2,
-                  "Expression": {
-                    "Measure": {
-                      "Expression": {
-                        "SourceRef": {
-                          "Entity": "_Measures"
-                        }
-                      },
-                      "Property": ".TotalProfit"
-                    }
-                  }
-                }
-              ]
             }
           },
           "9e5836d20e79bb415b7a": {
@@ -703,12 +583,6 @@
           "c46d10df9c892400a027": {
             "singleVisual": {
               "visualType": "actionButton",
-              "objects": {}
-            }
-          },
-          "d734603463cf12f347d1": {
-            "singleVisual": {
-              "visualType": "cardVisual",
               "objects": {}
             }
           }

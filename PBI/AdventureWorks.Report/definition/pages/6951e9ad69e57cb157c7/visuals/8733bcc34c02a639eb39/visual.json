@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "8733bcc34c02a639eb39",
   "position": {
-    "x": 90.447761194029852,
-    "y": 496.1194029850746,
-    "z": 3500,
-    "height": 206.86567164179104,
-    "width": 624.17910447761187,
-    "tabOrder": 11000
+    "x": 81.576354679802961,
+    "y": 496.55172413793105,
+    "z": 1000,
+    "height": 223.44827586206895,
+    "width": 665.02463054187194,
+    "tabOrder": 6000
   },
   "visual": {
     "visualType": "tableEx",
@@ -103,7 +103,7 @@
                     "Entity": "_Measures"
                   }
                 },
-                "Property": ".ProductProfit"
+                "Property": ".SoldItem'sVolume"
               }
             },
             "direction": "Descending"
@@ -126,11 +126,24 @@
               "solid": {
                 "color": {
                   "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 0,
-                      "Percent": -0.2
+                    "Literal": {
+                      "Value": "'#1B4430'"
                     }
                   }
+                }
+              }
+            },
+            "outlineStyle": {
+              "expr": {
+                "Literal": {
+                  "Value": "15D"
+                }
+              }
+            },
+            "outlineWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
                 }
               }
             }
@@ -143,7 +156,7 @@
             "totals": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             }
@@ -243,6 +256,52 @@
               "expr": {
                 "Literal": {
                   "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
                 }
               }
             }

@@ -9,6 +9,15 @@
         "page": "2.3.0"
       },
       "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "Custom7518090895083801.json",
+      "reportVersionAtImport": {
+        "visual": "2.4.0",
+        "report": "3.0.0",
+        "page": "2.3.0"
+      },
+      "type": "RegisteredResources"
     }
   },
   "objects": {
@@ -45,33 +54,63 @@
       "type": "RegisteredResources",
       "items": [
         {
-          "name": "adventure-works-logo-150x1504840211933670512.png",
-          "path": "adventure-works-logo-150x1504840211933670512.png",
+          "name": "logo15616511059233906.png",
+          "path": "logo15616511059233906.png",
           "type": "Image"
         },
         {
-          "name": "filter09960658404100564.png",
-          "path": "filter09960658404100564.png",
+          "name": "slicer_verde9059666491922223.png",
+          "path": "slicer_verde9059666491922223.png",
           "type": "Image"
         },
         {
-          "name": "filtro_(3)8304592882922524.png",
-          "path": "filtro_(3)8304592882922524.png",
+          "name": "Gemini_Generated_Image_o9gksso5616195516446282.png",
+          "path": "Gemini_Generated_Image_o9gksso5616195516446282.png",
           "type": "Image"
         },
         {
-          "name": "data-analytics24828121665081104.png",
-          "path": "data-analytics24828121665081104.png",
+          "name": "Custom7518090895083801.json",
+          "path": "Custom7518090895083801.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "drill_verde5503448416454242.png",
+          "path": "drill_verde5503448416454242.png",
           "type": "Image"
         },
         {
-          "name": "mapa19369665864542718.png",
-          "path": "mapa19369665864542718.png",
+          "name": "Gemini_Generated_Image_fzzjutf6852061115837907.png",
+          "path": "Gemini_Generated_Image_fzzjutf6852061115837907.png",
           "type": "Image"
         },
         {
-          "name": "map36752212937282913.png",
-          "path": "map36752212937282913.png",
+          "name": "mapa_amarelo10267125509710029.png",
+          "path": "mapa_amarelo10267125509710029.png",
+          "type": "Image"
+        },
+        {
+          "name": "slicer_amarelo9930188937483347.png",
+          "path": "slicer_amarelo9930188937483347.png",
+          "type": "Image"
+        },
+        {
+          "name": "mapa_amarelo34196353340676267.png",
+          "path": "mapa_amarelo34196353340676267.png",
+          "type": "Image"
+        },
+        {
+          "name": "slicer_cinza016085477692227568.png",
+          "path": "slicer_cinza016085477692227568.png",
+          "type": "Image"
+        },
+        {
+          "name": "slicer_cinza9879113373615976.png",
+          "path": "slicer_cinza9879113373615976.png",
+          "type": "Image"
+        },
+        {
+          "name": "Gemini_Generated_Image_fzzjutf29022779321376324.png",
+          "path": "Gemini_Generated_Image_fzzjutf29022779321376324.png",
           "type": "Image"
         }
       ]

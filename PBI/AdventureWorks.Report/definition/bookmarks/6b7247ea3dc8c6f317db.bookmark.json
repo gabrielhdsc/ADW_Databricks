@@ -1,0 +1,1138 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/bookmark/1.4.0/schema.json",
+  "displayName": "Drill Nav Open",
+  "name": "6b7247ea3dc8c6f317db",
+  "options": {
+    "targetVisualNames": []
+  },
+  "explorationState": {
+    "version": "1.3",
+    "activeSection": "e95ea96596606e562887",
+    "sections": {
+      "e95ea96596606e562887": {
+        "filters": {
+          "byExpr": [
+            {
+              "name": "76239bef54b8d02baa8d",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Hierarchy": "ProductName Hierarchy"
+                    }
+                  },
+                  "Level": "ProductCategory"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "a6ca1ad6b4bfdd50fa98",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Hierarchy": "ProductName Hierarchy"
+                    }
+                  },
+                  "Level": "ProductSubCategoy"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "54895b9b0a4958808dc1",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Hierarchy": "ProductName Hierarchy"
+                    }
+                  },
+                  "Level": "ProductName"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "eb08e82f42354aea4a57",
+              "type": "Categorical",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "d",
+                    "Entity": "dim_location",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "In": {
+                        "Expressions": [
+                          {
+                            "Column": {
+                              "Expression": {
+                                "SourceRef": {
+                                  "Source": "d"
+                                }
+                              },
+                              "Property": "CountryName"
+                            }
+                          }
+                        ],
+                        "Values": [
+                          [
+                            {
+                              "Literal": {
+                                "Value": "'United States'"
+                              }
+                            }
+                          ]
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Hierarchy": "CountryName Hierarchy"
+                    }
+                  },
+                  "Level": "CountryName"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "61aa2d099332cede84c9",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Hierarchy": "CountryName Hierarchy"
+                    }
+                  },
+                  "Level": "StateProvinceName"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "d09e952acef94f2191d7",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Hierarchy": "CountryName Hierarchy"
+                    }
+                  },
+                  "Level": "City"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "3937dc576f78be967e05",
+              "type": "Categorical",
+              "expression": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_date"
+                    }
+                  },
+                  "Property": "CalendarQuarter"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "0ee46d15adeda1cae663",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Hierarchy": "CalendarHierarchy"
+                    }
+                  },
+                  "Level": "MonthName"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "d84a75c6a5148dfb4dc5",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Hierarchy": "CalendarHierarchy"
+                    }
+                  },
+                  "Level": "CalendarYear"
+                }
+              },
+              "howCreated": 5
+            },
+            {
+              "name": "7aa7466287eb99f4e3b6",
+              "type": "Categorical",
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Hierarchy": "CalendarHierarchy"
+                    }
+                  },
+                  "Level": "DayNumberOfMonth"
+                }
+              },
+              "howCreated": 5
+            }
+          ],
+          "byTransientState": [
+            {
+              "name": "transientFilter",
+              "type": "Categorical",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "d",
+                    "Entity": "dim_date",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "Not": {
+                        "Expression": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "d"
+                                    }
+                                  },
+                                  "Property": "CalendarYear"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "2025L"
+                                  }
+                                }
+                              ],
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "2024L"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Hierarchy": "CalendarHierarchy"
+                    }
+                  },
+                  "Level": "CalendarYear"
+                }
+              },
+              "howCreated": 5,
+              "isTransient": true
+            },
+            {
+              "name": "transientFilter1",
+              "type": "Categorical",
+              "filter": {
+                "Version": 2,
+                "From": [
+                  {
+                    "Name": "d",
+                    "Entity": "dim_location",
+                    "Type": 0
+                  }
+                ],
+                "Where": [
+                  {
+                    "Condition": {
+                      "Not": {
+                        "Expression": {
+                          "In": {
+                            "Expressions": [
+                              {
+                                "Column": {
+                                  "Expression": {
+                                    "SourceRef": {
+                                      "Source": "d"
+                                    }
+                                  },
+                                  "Property": "CountryName"
+                                }
+                              }
+                            ],
+                            "Values": [
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'Canada'"
+                                  }
+                                }
+                              ],
+                              [
+                                {
+                                  "Literal": {
+                                    "Value": "'France'"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              "expression": {
+                "HierarchyLevel": {
+                  "Expression": {
+                    "Hierarchy": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Hierarchy": "CountryName Hierarchy"
+                    }
+                  },
+                  "Level": "CountryName"
+                }
+              },
+              "howCreated": 5,
+              "isTransient": true
+            }
+          ]
+        },
+        "visualContainers": {
+          "177a121842600ec4aeb1": {
+            "filters": {
+              "byExpr": [
+                {
+                  "name": "209533f3d7ce8bc0af68",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Property": "FullDate"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "e323794f5a412c3ee609",
+                  "type": "Advanced",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Property": "CalendarQuarter"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "9ee392ae18bbd115bb14",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Property": "ProductCategory"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "e3fc4e7752131017bcc0",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Property": "ProductSubCategoy"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "2745d1ac22938b8e74f7",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Property": "ProductName"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "2f40709a8c6d02c8e55a",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Property": "CountryName"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "d128ee86b89d7076496e",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Property": "StateProvinceName"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "5ed5237a1e67734b1fe5",
+                  "type": "Categorical",
+                  "expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Property": "City"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "920a05669c2413993d9a",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": "SODLineTotalValue"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "92d12c42ffb2b1b643a9",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": ".SoldItem'sVolume"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "b8b9728648778ece74df",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": ".ProductionCost"
+                    }
+                  },
+                  "howCreated": 0
+                },
+                {
+                  "name": "95ff0011d53357dfb9cc",
+                  "type": "Advanced",
+                  "expression": {
+                    "Measure": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "_Measures"
+                        }
+                      },
+                      "Property": ".ProductProfit"
+                    }
+                  },
+                  "howCreated": 0
+                }
+              ]
+            },
+            "singleVisual": {
+              "visualType": "tableEx",
+              "objects": {},
+              "orderBy": [
+                {
+                  "Direction": 2,
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Property": "ProductName"
+                    }
+                  }
+                }
+              ]
+            },
+            "highlight": {
+              "selection": [
+                {
+                  "dataMap": {
+                    "dim_date.FullDate": [
+                      {
+                        "scopeId": {
+                          "And": {
+                            "Left": {
+                              "And": {
+                                "Left": {
+                                  "And": {
+                                    "Left": {
+                                      "And": {
+                                        "Left": {
+                                          "And": {
+                                            "Left": {
+                                              "And": {
+                                                "Left": {
+                                                  "And": {
+                                                    "Left": {
+                                                      "Comparison": {
+                                                        "ComparisonKind": 0,
+                                                        "Left": {
+                                                          "Column": {
+                                                            "Expression": {
+                                                              "SourceRef": {
+                                                                "Entity": "dim_date"
+                                                              }
+                                                            },
+                                                            "Property": "FullDate"
+                                                          }
+                                                        },
+                                                        "Right": {
+                                                          "Literal": {
+                                                            "Value": "datetime'2023-05-30T00:00:00'"
+                                                          }
+                                                        }
+                                                      }
+                                                    },
+                                                    "Right": {
+                                                      "Comparison": {
+                                                        "ComparisonKind": 0,
+                                                        "Left": {
+                                                          "Column": {
+                                                            "Expression": {
+                                                              "SourceRef": {
+                                                                "Entity": "dim_date"
+                                                              }
+                                                            },
+                                                            "Property": "CalendarQuarter"
+                                                          }
+                                                        },
+                                                        "Right": {
+                                                          "Literal": {
+                                                            "Value": "2L"
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                },
+                                                "Right": {
+                                                  "Comparison": {
+                                                    "ComparisonKind": 0,
+                                                    "Left": {
+                                                      "Column": {
+                                                        "Expression": {
+                                                          "SourceRef": {
+                                                            "Entity": "dim_product"
+                                                          }
+                                                        },
+                                                        "Property": "ProductCategory"
+                                                      }
+                                                    },
+                                                    "Right": {
+                                                      "Literal": {
+                                                        "Value": "'Clothing'"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "Right": {
+                                              "Comparison": {
+                                                "ComparisonKind": 0,
+                                                "Left": {
+                                                  "Column": {
+                                                    "Expression": {
+                                                      "SourceRef": {
+                                                        "Entity": "dim_product"
+                                                      }
+                                                    },
+                                                    "Property": "ProductSubCategoy"
+                                                  }
+                                                },
+                                                "Right": {
+                                                  "Literal": {
+                                                    "Value": "'Tights'"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "Right": {
+                                          "Comparison": {
+                                            "ComparisonKind": 0,
+                                            "Left": {
+                                              "Column": {
+                                                "Expression": {
+                                                  "SourceRef": {
+                                                    "Entity": "dim_product"
+                                                  }
+                                                },
+                                                "Property": "ProductName"
+                                              }
+                                            },
+                                            "Right": {
+                                              "Literal": {
+                                                "Value": "'Women''s Tights, S'"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Right": {
+                                      "Comparison": {
+                                        "ComparisonKind": 0,
+                                        "Left": {
+                                          "Column": {
+                                            "Expression": {
+                                              "SourceRef": {
+                                                "Entity": "dim_location"
+                                              }
+                                            },
+                                            "Property": "CountryName"
+                                          }
+                                        },
+                                        "Right": {
+                                          "Literal": {
+                                            "Value": "'United States'"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "Right": {
+                                  "Comparison": {
+                                    "ComparisonKind": 0,
+                                    "Left": {
+                                      "Column": {
+                                        "Expression": {
+                                          "SourceRef": {
+                                            "Entity": "dim_location"
+                                          }
+                                        },
+                                        "Property": "StateProvinceName"
+                                      }
+                                    },
+                                    "Right": {
+                                      "Literal": {
+                                        "Value": "'Indiana'"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "Right": {
+                              "Comparison": {
+                                "ComparisonKind": 0,
+                                "Left": {
+                                  "Column": {
+                                    "Expression": {
+                                      "SourceRef": {
+                                        "Entity": "dim_location"
+                                      }
+                                    },
+                                    "Property": "City"
+                                  }
+                                },
+                                "Right": {
+                                  "Literal": {
+                                    "Value": "'Indianapolis'"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "metadata": [
+                    "_Measures.SODLineTotalValue",
+                    "_Measures..SoldItem'sVolume",
+                    "_Measures..ProductionCost",
+                    "_Measures..ProductProfit"
+                  ]
+                }
+              ],
+              "filterExpressionMetadata": {
+                "expressions": [
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Property": "FullDate"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_date"
+                        }
+                      },
+                      "Property": "CalendarQuarter"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Property": "ProductCategory"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Property": "ProductSubCategoy"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_product"
+                        }
+                      },
+                      "Property": "ProductName"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Property": "CountryName"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Property": "StateProvinceName"
+                    }
+                  },
+                  {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "dim_location"
+                        }
+                      },
+                      "Property": "City"
+                    }
+                  }
+                ],
+                "cachedValueItems": [
+                  {
+                    "identities": [
+                      {
+                        "scopeId": {
+                          "And": {
+                            "Left": {
+                              "And": {
+                                "Left": {
+                                  "And": {
+                                    "Left": {
+                                      "And": {
+                                        "Left": {
+                                          "And": {
+                                            "Left": {
+                                              "And": {
+                                                "Left": {
+                                                  "And": {
+                                                    "Left": {
+                                                      "Comparison": {
+                                                        "ComparisonKind": 0,
+                                                        "Left": {
+                                                          "Column": {
+                                                            "Expression": {
+                                                              "SourceRef": {
+                                                                "Entity": "dim_date"
+                                                              }
+                                                            },
+                                                            "Property": "FullDate"
+                                                          }
+                                                        },
+                                                        "Right": {
+                                                          "Literal": {
+                                                            "Value": "datetime'2023-05-30T00:00:00'"
+                                                          }
+                                                        }
+                                                      }
+                                                    },
+                                                    "Right": {
+                                                      "Comparison": {
+                                                        "ComparisonKind": 0,
+                                                        "Left": {
+                                                          "Column": {
+                                                            "Expression": {
+                                                              "SourceRef": {
+                                                                "Entity": "dim_date"
+                                                              }
+                                                            },
+                                                            "Property": "CalendarQuarter"
+                                                          }
+                                                        },
+                                                        "Right": {
+                                                          "Literal": {
+                                                            "Value": "2L"
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                },
+                                                "Right": {
+                                                  "Comparison": {
+                                                    "ComparisonKind": 0,
+                                                    "Left": {
+                                                      "Column": {
+                                                        "Expression": {
+                                                          "SourceRef": {
+                                                            "Entity": "dim_product"
+                                                          }
+                                                        },
+                                                        "Property": "ProductCategory"
+                                                      }
+                                                    },
+                                                    "Right": {
+                                                      "Literal": {
+                                                        "Value": "'Clothing'"
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "Right": {
+                                              "Comparison": {
+                                                "ComparisonKind": 0,
+                                                "Left": {
+                                                  "Column": {
+                                                    "Expression": {
+                                                      "SourceRef": {
+                                                        "Entity": "dim_product"
+                                                      }
+                                                    },
+                                                    "Property": "ProductSubCategoy"
+                                                  }
+                                                },
+                                                "Right": {
+                                                  "Literal": {
+                                                    "Value": "'Tights'"
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "Right": {
+                                          "Comparison": {
+                                            "ComparisonKind": 0,
+                                            "Left": {
+                                              "Column": {
+                                                "Expression": {
+                                                  "SourceRef": {
+                                                    "Entity": "dim_product"
+                                                  }
+                                                },
+                                                "Property": "ProductName"
+                                              }
+                                            },
+                                            "Right": {
+                                              "Literal": {
+                                                "Value": "'Women''s Tights, S'"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "Right": {
+                                      "Comparison": {
+                                        "ComparisonKind": 0,
+                                        "Left": {
+                                          "Column": {
+                                            "Expression": {
+                                              "SourceRef": {
+                                                "Entity": "dim_location"
+                                              }
+                                            },
+                                            "Property": "CountryName"
+                                          }
+                                        },
+                                        "Right": {
+                                          "Literal": {
+                                            "Value": "'United States'"
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "Right": {
+                                  "Comparison": {
+                                    "ComparisonKind": 0,
+                                    "Left": {
+                                      "Column": {
+                                        "Expression": {
+                                          "SourceRef": {
+                                            "Entity": "dim_location"
+                                          }
+                                        },
+                                        "Property": "StateProvinceName"
+                                      }
+                                    },
+                                    "Right": {
+                                      "Literal": {
+                                        "Value": "'Indiana'"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "Right": {
+                              "Comparison": {
+                                "ComparisonKind": 0,
+                                "Left": {
+                                  "Column": {
+                                    "Expression": {
+                                      "SourceRef": {
+                                        "Entity": "dim_location"
+                                      }
+                                    },
+                                    "Property": "City"
+                                  }
+                                },
+                                "Right": {
+                                  "Literal": {
+                                    "Value": "'Indianapolis'"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "valueMap": {
+                      "0": "5/30/2023",
+                      "1": "2",
+                      "2": "Clothing",
+                      "3": "Tights",
+                      "4": "Women's Tights, S",
+                      "5": "United States",
+                      "6": "Indiana",
+                      "7": "Indianapolis"
+                    }
+                  }
+                ]
+              }
+            }
+          },
+          "82c3acb3e3ccac01b159": {
+            "singleVisual": {
+              "visualType": "shape",
+              "objects": {}
+            }
+          },
+          "54bb7578ec1dd3a11da1": {
+            "singleVisual": {
+              "visualType": "image",
+              "objects": {}
+            }
+          }
+        },
+        "visualContainerGroups": {
+          "fc557b4b2554b7c09e24": {
+            "isHidden": false
+          },
+          "1a12b999bb0e37e477e0": {
+            "isHidden": true
+          }
+        }
+      }
+    },
+    "objects": {
+      "merge": {
+        "outspacePane": [
+          {
+            "properties": {
+              "expanded": {
+                "expr": {
+                  "Literal": {
+                    "Value": "false"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -4,10 +4,9 @@
   "position": {
     "x": 0,
     "y": 0,
-    "z": 10000,
-    "height": 720,
-    "width": 60,
-    "tabOrder": 10000
+    "z": 6000,
+    "height": 719.11330049261085,
+    "width": 70.049261083743843
   },
   "visualGroup": {
     "displayName": "Close Nav",

@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "4ca5eacd2ce66902ced2",
   "position": {
-    "x": 23.054187192118228,
+    "x": 12.413793103448276,
     "y": 448.66995073891627,
     "z": 2000,
-    "height": 176.45320197044336,
-    "width": 157.83251231527095,
+    "height": 256.25615763546796,
+    "width": 180,
     "tabOrder": 2000
   },
   "visual": {
@@ -104,102 +104,6 @@
                 "Literal": {
                   "Value": "0D"
                 }
-              }
-            },
-            "filter": {
-              "filter": {
-                "Version": 2,
-                "From": [
-                  {
-                    "Name": "d",
-                    "Entity": "dim_location",
-                    "Type": 0
-                  }
-                ],
-                "Where": [
-                  {
-                    "Condition": {
-                      "In": {
-                        "Expressions": [
-                          {
-                            "Column": {
-                              "Expression": {
-                                "SourceRef": {
-                                  "Source": "d"
-                                }
-                              },
-                              "Property": "CountryName"
-                            }
-                          }
-                        ],
-                        "Values": [
-                          [
-                            {
-                              "Literal": {
-                                "Value": "'France'"
-                              }
-                            }
-                          ]
-                        ]
-                      }
-                    },
-                    "Annotations": {
-                      "filterExpressionMetadata": {
-                        "expressions": [
-                          {
-                            "HierarchyLevel": {
-                              "Expression": {
-                                "Hierarchy": {
-                                  "Expression": {
-                                    "SourceRef": {
-                                      "Entity": "dim_location"
-                                    }
-                                  },
-                                  "Hierarchy": "CountryName Hierarchy"
-                                }
-                              },
-                              "Level": "CountryName"
-                            }
-                          }
-                        ],
-                        "decomposedIdentities": {
-                          "values": [
-                            [
-                              {
-                                "0": [
-                                  {
-                                    "Literal": {
-                                      "Value": "'France'"
-                                    }
-                                  }
-                                ]
-                              }
-                            ]
-                          ],
-                          "columns": [
-                            {
-                              "value": {
-                                "Column": {
-                                  "Expression": {
-                                    "SourceRef": {
-                                      "Entity": "dim_location"
-                                    }
-                                  },
-                                  "Property": "CountryName"
-                                }
-                              }
-                            }
-                          ]
-                        },
-                        "valueMap": [
-                          {
-                            "0": "France"
-                          }
-                        ]
-                      }
-                    }
-                  }
-                ]
               }
             }
           }
@@ -302,7 +206,18 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B4430'"
+                    }
+                  }
                 }
               }
             }
@@ -332,66 +247,5 @@
     },
     "drillFilterOtherVisuals": true
   },
-  "parentGroupName": "1a48afaeb57ff89861b4",
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "2288a8bd60eea250cd97",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_location"
-                  }
-                },
-                "Hierarchy": "CountryName Hierarchy"
-              }
-            },
-            "Level": "CountryName"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "100c6e9ea8c25f60d86a",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_location"
-                  }
-                },
-                "Hierarchy": "CountryName Hierarchy"
-              }
-            },
-            "Level": "StateProvinceName"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "ee59450eb1d522980a4b",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_location"
-                  }
-                },
-                "Hierarchy": "CountryName Hierarchy"
-              }
-            },
-            "Level": "City"
-          }
-        },
-        "type": "Categorical"
-      }
-    ]
-  }
+  "parentGroupName": "1a48afaeb57ff89861b4"
 }

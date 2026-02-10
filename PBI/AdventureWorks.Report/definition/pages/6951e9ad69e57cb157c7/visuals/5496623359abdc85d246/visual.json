@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "5496623359abdc85d246",
   "position": {
-    "x": 107.29253981559096,
-    "y": 143.77200335289189,
+    "x": 81.576354679802961,
+    "y": 145.41871921182266,
     "z": 0,
-    "height": 320.80469404861697,
-    "width": 645.90108968985749,
-    "tabOrder": 1000
+    "height": 320.98522167487687,
+    "width": 650.83743842364538,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "lineChart",
@@ -107,14 +107,73 @@
                       "Entity": "_Measures"
                     }
                   },
-                  "Property": "SOSubTotalValue"
+                  "Property": "SODLineTotalValue"
                 }
               },
-              "queryRef": "_Measures.SOSubTotalValue",
-              "nativeQueryRef": "SOSubTotalValue"
+              "queryRef": "_Measures.SODLineTotalValue",
+              "nativeQueryRef": "Revenue",
+              "displayName": "Revenue"
             }
           ]
         }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "HierarchyLevel": {
+                "Expression": {
+                  "Hierarchy": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "dim_date"
+                      }
+                    },
+                    "Hierarchy": "CalendarHierarchy"
+                  }
+                },
+                "Level": "CalendarYear"
+              }
+            },
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "HierarchyLevel": {
+                "Expression": {
+                  "Hierarchy": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "dim_date"
+                      }
+                    },
+                    "Hierarchy": "CalendarHierarchy"
+                  }
+                },
+                "Level": "CalendarQuarter"
+              }
+            },
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "HierarchyLevel": {
+                "Expression": {
+                  "Hierarchy": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "dim_date"
+                      }
+                    },
+                    "Hierarchy": "CalendarHierarchy"
+                  }
+                },
+                "Level": "MonthName"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
       }
     },
     "objects": {
@@ -468,7 +527,7 @@
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#2D672D'"
+                      "Value": "'#326C49'"
                     }
                   }
                 }
@@ -476,7 +535,7 @@
             }
           },
           "selector": {
-            "metadata": "_Measures.SOSubTotalValue"
+            "metadata": "_Measures.SODLineTotalValue"
           }
         }
       ]
@@ -561,14 +620,25 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
                 }
               }
             },
             "width": {
               "expr": {
                 "Literal": {
-                  "Value": "1D"
+                  "Value": "3D"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B4430'"
+                    }
+                  }
                 }
               }
             }
@@ -614,7 +684,14 @@
             "show": {
               "expr": {
                 "Literal": {
-                  "Value": "false"
+                  "Value": "true"
+                }
+              }
+            },
+            "type": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Default'"
                 }
               }
             }
@@ -623,99 +700,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "87685ce46af020fee4de",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Measures"
-              }
-            },
-            "Property": "SOSubTotalValue"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "5c00f00b17f4cf9dc2c4",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_date"
-                  }
-                },
-                "Hierarchy": "CalendarHierarchy"
-              }
-            },
-            "Level": "CalendarYear"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "02f4e70b6c9f038a4102",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_date"
-                  }
-                },
-                "Hierarchy": "CalendarHierarchy"
-              }
-            },
-            "Level": "CalendarQuarter"
-          }
-        },
-        "type": "Advanced"
-      },
-      {
-        "name": "dfcfe3d638e116c825cf",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_date"
-                  }
-                },
-                "Hierarchy": "CalendarHierarchy"
-              }
-            },
-            "Level": "MonthName"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "eb0fd8f6210af6f99266",
-        "field": {
-          "HierarchyLevel": {
-            "Expression": {
-              "Hierarchy": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_date"
-                  }
-                },
-                "Hierarchy": "CalendarHierarchy"
-              }
-            },
-            "Level": "DayNumberOfMonth"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

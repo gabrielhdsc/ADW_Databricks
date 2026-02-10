@@ -2,12 +2,12 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
   "name": "177a121842600ec4aeb1",
   "position": {
-    "x": 60.295566502463053,
-    "y": 163.15270935960592,
-    "z": 2000,
-    "height": 556.84729064039414,
-    "width": 1220.0985221674878,
-    "tabOrder": 1000
+    "x": 70.049261083743843,
+    "y": 0,
+    "z": 500,
+    "height": 720,
+    "width": 1210.344827586207,
+    "tabOrder": 0
   },
   "visual": {
     "visualType": "tableEx",
@@ -204,198 +204,28 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "dim_location"
+                    "Entity": "dim_product"
                   }
                 },
-                "Property": "CountryName"
+                "Property": "ProductName"
               }
             },
-            "direction": "Ascending"
+            "direction": "Descending"
           }
         ]
       }
     },
     "objects": {
-      "columnWidth": [
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "118.0067936511859D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures.SODLineTotalValue"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "101.31003143791668D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures..ProductProfit"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "118.4511897627444D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures..ProductionCost"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "63.819894142088046D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "_Measures..SoldItem'sVolume"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "98.2512667526997D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_location.City"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "84.24630516913604D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_location.StateProvinceName"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "97.13299959410094D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_location.CountryName"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "158.57634731043314D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_product.ProductName"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "56.359608107797015D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_date.CalendarQuarter"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "76.69950738916256D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_date.FullDate"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "89.12164135163644D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_product.ProductCategory"
-          }
-        },
-        {
-          "properties": {
-            "value": {
-              "expr": {
-                "Literal": {
-                  "Value": "120.28571788664267D"
-                }
-              }
-            }
-          },
-          "selector": {
-            "metadata": "dim_product.ProductSubCategoy"
-          }
-        }
-      ],
       "grid": [
         {
           "properties": {
-            "gridHorizontalColor": {
+            "outlineColor": {
               "solid": {
                 "color": {
                   "expr": {
                     "ThemeDataColor": {
-                      "ColorId": 1,
-                      "Percent": 0
+                      "ColorId": 0,
+                      "Percent": -0.2
                     }
                   }
                 }
@@ -407,29 +237,6 @@
                   "Value": "true"
                 }
               }
-            },
-            "gridVerticalColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "ThemeDataColor": {
-                      "ColorId": 1,
-                      "Percent": 0
-                    }
-                  }
-                }
-              }
-            },
-            "outlineColor": {
-              "solid": {
-                "color": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "'#1B4430'"
-                    }
-                  }
-                }
-              }
             }
           }
         }
@@ -437,14 +244,51 @@
       "columnHeaders": [
         {
           "properties": {
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1E6333'"
+                    }
+                  }
+                }
+              }
+            },
+            "outlineWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
             "backColor": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1B4430'"
+                      "Value": "'#1E6333'"
                     }
                   }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
                 }
               }
             }
@@ -454,25 +298,12 @@
       "values": [
         {
           "properties": {
-            "urlIcon": {
-              "expr": {
-                "Literal": {
-                  "Value": "false"
-                }
-              }
-            }
-          }
-        }
-      ],
-      "total": [
-        {
-          "properties": {
-            "backColor": {
+            "backColorSecondary": {
               "solid": {
                 "color": {
                   "expr": {
                     "Literal": {
-                      "Value": "'#1B4430'"
+                      "Value": "'#DBF2E5'"
                     }
                   }
                 }
@@ -489,7 +320,66 @@
             "name": {
               "expr": {
                 "Literal": {
-                  "Value": "'AlternatingRowsNew'"
+                  "Value": "'Minimal'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "title": [
+        {
+          "properties": {
+            "titleWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "width": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "visualHeader": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
                 }
               }
             }
@@ -498,5 +388,177 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "c9b5a257c35c5c6bc5de",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "FullDate"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "28e42ef16e5f8f2edff3",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_date"
+              }
+            },
+            "Property": "CalendarQuarter"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "baed911a3c41abfc7405",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_product"
+              }
+            },
+            "Property": "ProductCategory"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "a1df393c876bf1ef424f",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_product"
+              }
+            },
+            "Property": "ProductSubCategoy"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "4402fc94c6f097eac7c1",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_product"
+              }
+            },
+            "Property": "ProductName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "b5588e3c5025bcdbd01b",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_location"
+              }
+            },
+            "Property": "CountryName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "41ea13d6999348a90654",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_location"
+              }
+            },
+            "Property": "StateProvinceName"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "341d54788a1cef0daec6",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_location"
+              }
+            },
+            "Property": "City"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "9c8071131edd3e823a7a",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": "SODLineTotalValue"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "b039054733c002c93401",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": ".SoldItem'sVolume"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "4c06d4a9b0b695803f11",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": ".ProductionCost"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "5db38eacea76f6e35b29",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Measures"
+              }
+            },
+            "Property": ".ProductProfit"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
