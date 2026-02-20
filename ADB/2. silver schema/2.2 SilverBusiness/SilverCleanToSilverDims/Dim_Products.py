@@ -62,12 +62,14 @@ CREATE TABLE IF NOT EXISTS adventure_works_catalog.silver.dim_product (
     SubCategory STRING,
     ModelName STRING,
     StandardCost DECIMAL(18,2),
-    ListPrice DECIMAL(18,2)
+    ListPrice DECIMAL(18,2),
+    FinishedGoodsFlag INT
 )
 """)
 
 # Registro para dados nulos
-spark.sql("""INSERT INTO adventure_works_catalog.silver.dim_product
+spark.sql("""
+INSERT INTO adventure_works_catalog.silver.dim_product
 SELECT
     -1 AS Product_SK,
     -1 AS ProductID,
@@ -75,6 +77,7 @@ SELECT
     'Not registered',
     'Not registered',
     'Not registered',
+    0,
     0,
     0
 WHERE NOT EXISTS (
@@ -96,8 +99,25 @@ df_dim_product_base = (
         F.coalesce(F.col("ProductModelName"), F.lit("Not registered")).alias("ModelName"),
 
         F.col("StandardCost"),
-        F.col("ListPrice")
+        F.col("ListPrice"),
+        F.coalesce(F.col("FinishedGoodsFlag").cast("int"), F.lit(0)).alias("FinishedGoodsFlag")
     )
+)
+
+full_table_name = "adventure_works_catalog.silver.dim_products"
+table_name_short = "dim_products"
+
+try:
+    df_dim_product_base = deduplicate_by_rule(
+        df_dim_product_base,
+        partition_cols=["ProductID"],
+        order_cols=[
+            F.col("ProductName").isNotNull().desc(),
+            F.col("StandardCost").isNotNull().desc(),
+            F.col("ListPrice").isNotNull().desc()
+        ]
+    )
+<<<<<<< HEAD
 )
 
 full_table_name = "adventure_works_catalog.silver.dim_products"
@@ -130,6 +150,26 @@ try:
     # Merge SCD type 1
     df_dim_product_base.createOrReplaceTempView("src_dim_product")
 
+=======
+
+    df_dim_product_base.cache()
+
+<<<<<<< HEAD
+    #Registros processados após as regras e joins (volume transformado)
+    rows_processed = df_dim_product_base.count()
+
+    silver_selection(
+        spark=spark,
+        run_id=current_run_id,
+        df_input=df_dim_product_base,
+        process_name="Criação_dim_table",
+        table_name=table_name_short
+    )
+
+    # Merge SCD type 1
+    df_dim_product_base.createOrReplaceTempView("src_dim_product")
+
+>>>>>>> b3c5711 (feat: Feature Store for ML and Chat LLM with spark.sql adjustments)
     spark.sql("""
     MERGE INTO adventure_works_catalog.silver.dim_product tgt
     USING src_dim_product src
@@ -215,7 +255,53 @@ except Exception as e:
     )
 
     print(f"Erro em dim_products: {e}")
+<<<<<<< HEAD
 
+=======
+
+=======
+WHEN MATCHED AND (
+    NOT (tgt.ProductName  <=> src.ProductName) OR
+    NOT (tgt.Category     <=> src.Category) OR
+    NOT (tgt.SubCategory  <=> src.SubCategory) OR
+    NOT (tgt.ModelName    <=> src.ModelName) OR
+    NOT (tgt.StandardCost <=> src.StandardCost) OR
+    NOT (tgt.ListPrice    <=> src.ListPrice) OR
+    NOT (tgt.FinishedGoodsFlag <=> src.FinishedGoodsFlag)
+)
+THEN UPDATE SET 
+    tgt.ProductName  = src.ProductName,
+    tgt.Category     = src.Category,
+    tgt.SubCategory  = src.SubCategory,
+    tgt.ModelName    = src.ModelName,
+    tgt.StandardCost = src.StandardCost,
+    tgt.ListPrice    = src.ListPrice,
+    tgt.FinishedGoodsFlag = src.FinishedGoodsFlag
+
+WHEN NOT MATCHED THEN
+  INSERT (
+    ProductID,
+    ProductName,
+    Category,
+    SubCategory,
+    ModelName,
+    StandardCost,
+    ListPrice,
+    FinishedGoodsFlag
+  )
+  VALUES (
+    src.ProductID,
+    src.ProductName,
+    src.Category,
+    src.SubCategory,
+    src.ModelName,
+    src.StandardCost,
+    src.ListPrice,
+    src.FinishedGoodsFlag
+  )
+""")
+>>>>>>> b7d2ce9 (feat: add feature store for ML and chat LLM and include new column in product dimension)
+>>>>>>> b3c5711 (feat: Feature Store for ML and Chat LLM with spark.sql adjustments)
 
 # Documentação das colunas
 dim_product_columns = {
@@ -226,9 +312,9 @@ dim_product_columns = {
     "SubCategory": "Subcategoria do produto",
     "ModelName": "Modelo do produto",
     "StandardCost": "Custo padrão do produto",
-    "ListPrice": "Preço de lista do produto"
+    "ListPrice": "Preço de lista do produto",
+    "FinishedGoodsFlag": "1 = produto final vendável, 0 = componente interno"
 }
-
 
 # Adicionando os comentários no Unity Catalog
 add_column_comments(
@@ -237,3 +323,5 @@ add_column_comments(
     table="dim_product",
     columns_dict=dim_product_columns
 )
+
+
