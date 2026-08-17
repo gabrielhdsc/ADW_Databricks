@@ -2,125 +2,192 @@
 
 ## Introduction
 
-This repository contains the source code and configurations for the **Adventure Works AI & Data Platform**, an end-to-end solution utilizing the **AdventureWorks dataset** to simulate a real-world data platform modernization project. This project solves the "data chaos" challenge caused by the company's rapid global expansion by establishing a Single Source of Truth and enabling advanced analytics.
+Este repositório contém o código-fonte e as configurações da Plataforma de Dados e IA da Adventure Works, uma solução end-to-end que utiliza o dataset da AdventureWorks para simular um projeto real de modernização de dados. Este projeto resolve o desafio do "caos de dados" causado pela rápida expansão global da empresa, estabelecendo uma Fonte Única de Verdade (Single Source of Truth) e habilitando análises avançadas.
 
-The solution implements a scalable **Data Lakehouse** architecture on the Azure cloud, covering the entire data lifecycle: from the automated extraction of the transactional database (SQL) to delivering actionable data for dashboards, Machine Learning models, and Generative AI (LLM) interfaces.
+O projeto implementa uma arquitetura Lakehouse escalável na nuvem Azure baseada na abordagem Medallion (Bronze, Silver e Gold), integrando múltiplas fontes de dados, pipelines de ingestão, processamento com PySpark/SQL, modelagem dimensional, governança, Business Intelligence, Feature Engineering, Machine Learning e consumo analítico com Databricks Dashboards e Power BI.
 
-## Key Use Cases & Business Value
+## Valor de Negócio
 
-The project materializes the value of data through three main pillars:
-1. **Business Intelligence (BI):** An automated pipeline that cleanses, joins, and models transactional data, providing reliable metrics for executive dashboards.
-2. **Predictive Intelligence (Machine Learning):**
-   * **Sales Forecasting:** A Time Series model (SARIMAX) to predict future monthly revenue.
-   * **New Customer Ranking:** A Classification model (Random Forest) that analyzes a customer's first 90 days to predict their Lifetime Value (LTV) tier as GOLD, SILVER, or BRONZE.
-3. **GenAI & Consumption (Databricks Apps):** An interactive UI built with **Streamlit** that hosts the dashboards, integrates ML model API calls, and provides **Databricks Genie**—a conversational LLM assistant for natural language queries directly against the database.
+O projeto materializa o valor dos dados através de três pilares principais:
+1. **Business Intelligence (BI):** Um pipeline automatizado que limpa, cruza e modela dados transacionais, fornecendo métricas confiáveis e padronizadas em painéis executivos para análises de vendas, compras, receita, custos, rentabilidade, produtos, clientes, regiões e territórios.
+2. **Inteligência Preditiva (Machine Learning):**
+   * **Previsão de Vendas:** Um modelo de Séries Temporais (SARIMAX) para prever as receitas mensais futuras.
+   * **Classificação de Novos Clientes:** Um modelo de Classificação (Random Forest) que analisa os primeiros 90 dias de um cliente para prever seu *Lifetime Value* (LTV), classificando-o como OURO, PRATA ou BRONZE.
+3. **GenAI e Consumo (Databricks Apps):** Criação de um ambiente interativo (Streamlit) que hospeda os dashboards, integra chamadas de API dos modelos de ML e disponibiliza o Databricks Genie, um assistente conversacional (LLM) para consultas em linguagem natural diretamente no banco de dados.
 
-## Architecture & Tech Stack
+## Arquitetura e Stack Tecnológico
+A solução utiliza uma stack moderna de dados centralizada no ecossistema Azure e Databricks:
 
-The solution leverages a modern data stack centered around Azure and Databricks:
+* **Orquestração e Ingestão:**
+  * **Azure Data Factory (ADF):** Responsável por extrair dados do Azure SQL DB (via queries parametrizadas), CSVs e de APIs (Clima, Moeda, Geolocalização), carregando-os na Landing Zone.
+  * **Azure Data Lake Storage Gen2 (ADLS Gen2):** Armazenamento de dados escalável e seguro para os dados brutos.
+* **Processamento e Lakehouse:**
+  * **Azure Databricks (PySpark e SQL):** O motor unificado de processamento analítico que executa a arquitetura Medallion (Camadas Bronze, Silver e Gold). Realiza desde a limpeza e modelagem dimensional (*Star Schema*) até Feature Engineering.
+  * **Delta Lake:** Camada de armazenamento *open-source* que traz transações ACID para o Data Lake.
+* **Governança e MLOps:**
+  * **Unity Catalog:** Solução unificada de governança para dados e IA (controle de acesso, tabelas e linhagem).
+  * **Databricks Feature Store:** Centralização de variáveis de comportamento de clientes para treinamento de modelos.
+  * **MLflow:** Plataforma *open-source* para gestão do ciclo de vida de ML (rastreamento de experimentos, versionamento de modelos e Model Registry).
+* **Consumo e Visualização:**
+  * **Power BI Desktop:** Utilizado para relatórios corporativos avançados (projeto versionado via formato PBIP).
+  * **Databricks Dashboards:** Painéis nativos no Databricks.
+* **Manejo e UI:**
+  * **Streamlit:** Aplicação web para consumo dos produtos de dados criados (chatbot, Dashboards e modelos de ML).
 
-* **Orchestration & Ingestion:** * **Azure Data Factory (ADF):** The orchestrator of the operation, responsible for extracting data from the Azure SQL Database via dynamic parameterized queries and loading it into the Landing Zone.
-  * **Azure Data Lake Storage Gen2 (ADLS Gen2):** Scalable and secure data lake storage for raw data.
-* **Processing & Lakehouse:** * **Azure Databricks (PySpark & SQL):** The unified analytics processing engine executing the Medallion architecture (Bronze, Silver, and Gold layers). Used for data cleansing, dimensional modeling (Star Schema), and Feature Engineering.
-  * **Delta Lake:** The open-source storage layer that brings ACID transactions to the data lake.
-  * **Databricks Lakeflow:** Utilized for building reliable, maintainable, and testable data pipelines.
-* **Governance & MLOps:** * **Unity Catalog:** Unified governance solution for data and AI, managing access control, tables, and data lineage.
-  * **Databricks Feature Store:** Centralization of customer behavior variables for model training.
-  * **MLflow:** An open-source platform for managing the end-to-end machine learning lifecycle (experiment tracking, model versioning, and Model Registry).
-  * **Model Serving:** Exposing ML models via REST API endpoints for real-time consumption.
-* **Application Lifecycle Management & UI:**
-  * **Streamlit (Databricks Apps):** A web application hosted natively within Databricks for secure business consumption.
-  * **Azure DevOps:** The ALM platform (Azure Boards for tracking, Azure Pipelines for CI/CD, and Azure Repos for Git version control).
-  * **Power BI Desktop (Optional):** Used for advanced data visualization and corporate reporting.
+---
 
+## Arquitetura Medallion
 
-# Repository Structure
+### Bronze
 
-The code is organized to reflect the data pipeline lifecycle:
+A camada Bronze recebe dados de diferentes fontes com o objetivo de preservar os dados originais e disponibilizá-los para o processamento posterior.
+* **APIs:** `AutoLoaderAPIToBronze.py`, `AutoLoaderGeocodingAPIToBronze.py`, `AutoLoaderWeatherAPIToBronze.py`
+* **CSV:** `AutoLoaderCSVSalesOrderAndSalesHeaderToBronze.py`
+* **SQL:** `AutoLoaderSQLToBronze.py`
 
+O objetivo da Bronze é manter os dados em uma estrutura próxima à origem, servindo como primeira camada persistente do processamento no Lakehouse.
+
+### Silver
+
+A Silver está dividida em duas etapas:
+
+1. **Silver Cleaning:** Responsável pela limpeza e padronização dos dados provenientes da Bronze. Inclui entidades relacionadas a Recursos Humanos, Pessoas, Produtos, Compras, Vendas e APIs.
+2. **Silver Business:** Responsável pela construção do modelo dimensional. O resultado é um modelo analítico baseado em **Star Schema**, adequado para consultas e ferramentas de BI:
+   * **Dimensões:** `Dim_Currency`, `Dim_Customer`, `Dim_Date`, `Dim_Location`, `Dim_Products`, `Dim_Supplier`, `Dim_Territory`.
+   * **Fatos:** `FactSalesOrderDetail`, `FactSalesOrderHeader`, `FactPurchases`.
+
+### Gold
+
+A camada Gold transforma o modelo Silver em estruturas orientadas aos casos de uso do negócio. Essas estruturas servem como camada de consumo para análises de vendas, compras e rentabilidade. Entre as visões existentes estão:
+* `SalesViewForBI.py`
+* `PurchasesViewForBI.py`
+* `ProfitabilityViewForDash.py`
+* `ProfitabilityRevenueXCostViewForDash.py`
+* `ProfitailityNotProfProductsViewForDash.py`
+
+---
+
+## Componentes Analíticos e IA
+
+### Dashboards
+
+O projeto possui um dashboard desenvolvido nativamente no ambiente Databricks (`ADB/4. dashboards/Profitability-GO-LIVE.lvdash.json`). Também existe um projeto Power BI versionado em `PBI/AdventureWorks.pbip`. O modelo semântico do Power BI contém tabelas dimensionais e fatos perfeitamente alinhados ao modelo construído no Lakehouse.
+
+### Feature Engineering e Machine Learning
+
+As *features* utilizadas pelos modelos são organizadas em `ADB/5. features store/`. Os scripts incluem variáveis relacionadas a demanda, estoque, vendas, clientes, produtos e regiões.
+
+Os componentes de Machine Learning estão em `ADB/MachineLearning/` (`GenerateSinteticData.py`, `PredictionModel.py`). Os casos de uso descritos no projeto incluem:
+- Previsão de receita utilizando **SARIMAX**.
+- Classificação de clientes (*LTV Tier*) utilizando **Random Forest**.
+
+### Databricks Genie
+
+O projeto possui views específicas otimizadas para consumo pela IA generativa do Databricks Genie em `ADB/Genie/` (ex: `vwcustomergenie.py`, `vwsalesgenie.py`). Essas *views* organizam e desnormalizam os dados de forma mais adequada para consultas analíticas realizadas em linguagem natural pelo usuário.
+
+### Governança
+
+Os componentes e logs de governança estão em `ADB/Governance/` (`ADF_Execution.py`, `GovernanceTables.sql`). 
+O projeto também possui um relatório específico de governança em Power BI (`Governance_report/`), cujo modelo semântico monitora informações relacionadas a:
+- Execução dos pipelines do Azure Data Factory;
+- Qualidade dos dados e Linhagem;
+- Métricas de governança.
+
+---
+
+# Estrutura do repositório
 ```text
-├── ADB/
-│   ├── 1. bronze schema/    # AutoLoader and Delta ingestion scripts (Landing -> Bronze)
-│   ├── 2. silver schema/    # Data cleansing, standardization, and dimensional modeling
-│   ├── 3. gold schema/      # Business views, aggregations, and Feature Engineering
-|   ├── 4. dashboards/       # GO-LIVE profitable dashboard
-|   ├── 5. features store/   # Features created to be consumed by the ML models
-|   ├── Genie/               # Views used to improve the chat model
-│   ├── Governance/          # Audit and logging notebooks triggered by ADF
-│   ├── Jobs/                # Databricks Jobs code notebooks
-│   ├── MachineLearning/     # Model training (SARIMAX, Random Forest) and MLflow integration
-│   └── Module/              # Functions notebooks
-├── ADF/                     # JSON definitions for ADF pipelines, Linked Services, and Triggers
-│   ├── dataset/             # Define the data structure in a dataset
-│   ├── factory/             # JSON identifier file
-│   ├── linkedService/       # Connectors between the sources and sinks
-│   ├── pipeline/            # JSON files describing the pipeline structure
-│   └── trigger/             # Pipeline starter configuration
-│── PBI/                     # Reports developed in Power BI Plataform
-│── .gitignore  
-│── publish_config.json
+├── ADB/                     # Scripts executados no Azure Databricks (PySpark/SQL)
+│   ├── 1. bronze schema/    # Ingestão via AutoLoader (APIs, CSV, SQL)
+│   ├── 2. silver schema/    # Limpeza e Modelagem Dimensional (Fatos e Dimensões)
+│   ├── 3. gold schema/      # Visões de negócio finais e agregações
+│   ├── 4. dashboards/       # Arquivos de dashboards nativos do Databricks
+│   ├── 5. features store/   # Construção de features consumidas pelos modelos de ML
+│   ├── Genie/               # Views otimizadas para alimentar a IA (Databricks Genie)
+│   ├── Governance/          # Logs de execução e tabelas de governança via ADF
+│   ├── Jobs/                # Notebooks orquestradores (Master)
+│   ├── MachineLearning/     # Treinamento de modelos (SARIMAX, RF) integrados ao MLflow
+│   └── Module/              # Funções reaproveitáveis e utilitários
+├── ADF/                     # Orquestração via Azure Data Factory (Infraestrutura como Código)
+│   ├── dataset/             # Definições das estruturas de dados nas pontas (Source/Sink)
+│   ├── linkedService/       # Conectores para ADLS, SQL, Databricks e APIs
+│   ├── pipeline/            # Fluxo visual de execução das cargas
+│   └── trigger/             # Gatilhos de agendamento automático
+├── PBI/                     # Projetos do Power BI (PBIP) com modelos semânticos e relatórios
+│   ├── AdventureWorks.Report/
+│   └── AdventureWorks.SemanticModel/
+├── publish_config.json      # Arquivo de configuração de publicação
+├── TechnicalDocumentation.md# Documentação técnica aprofundada
 └── README.md
 ```
+---
 
-## Getting Started
-Follow the steps below to set up your environment and interact with the code in this repository.
+# Tecnologias
 
-### 1. Prerequisites
+### Cloud & Data Platform
 
-Before you begin, ensure you have access to the following:
+- Microsoft Azure
+- Azure Data Factory
+- Azure Data Lake Storage Gen2
+- Azure Databricks
+- Delta Lake
 
-* **Azure Subscription:** With permissions to create and manage Azure resources.
-* **Azure DevOps Organization & Project:** Access to this specific Azure DevOps project (adventureworks-databricks-training).
-* **Azure Databricks Workspace:** A Databricks workspace provisioned within your Azure subscription.
-* **Git Client (Optional):** e.g., Git Bash, GitHub Desktop, or built-in Git in VS Code for local repository operations.
+### Data Engineering
 
+- Python
+- PySpark
+- SQL
+- Databricks Auto Loader
+- Medallion Architecture
+- Dimensional Modeling / Star Schema
 
-### 2. Setting up your Databricks Environment
+### Analytics
 
-To work with the notebooks and code, you must connect your Azure Databricks workspace to this Azure DevOps repository.
+- Databricks Dashboards
+- Power BI
+- Power BI Semantic Model
 
-**Step A: Generate a Personal Access Token (PAT) in Azure DevOps**
+### Machine Learning
 
-1. Navigate to your **Azure DevOps Organization settings.**
-2. Click on **Personal access tokens** and select **New Token.**
-3. Name: `DatabricksRepoIntegration-<YourName>` (e.g., DatabricksRepoIntegration-JohnJoe).
-4. **Organization:** Select your Azure DevOps organization.
-5. **Expiration:** Set an appropriate expiration date.
-6. **Scopes:** Under "Code", select Read & write.
-7. Click **Create** and **COPY THE GENERATED TOKEN IMMEDIATELY!** (You will not be able to see it again).
+- SARIMAX
+- Random Forest
+- Feature Engineering
+- Feature Store
 
+### Governance
 
-**Step B: Configure Git Integration in Azure Databricks**
+- Data Quality
+- Data Lineage
+- Pipeline Logging
+- Governance Reporting
 
-1. Log in to your Azure Databricks workspace.
-2. In the bottom left corner, click on your **User Icon** (or initials) and select **User Settings.**
-3. Go to the **Git integration** tab.
-4. **Git provider:** Select Azure DevOps.
-5. **Azure DevOps organization URL:** Enter your organization's URL (e.g., https://dev.azure.com/your-organization).
-6. **Personal Access Token:** Paste the PAT you copied from Azure DevOps.
-7. Click Save.
+### GenAI
 
+- Databricks Genie
+- Views específicas para consumo por linguagem natural
 
-**Step C: Clone this Repository into Databricks Repos**
+---
 
-1. In your Azure Databricks workspace, navigate to **Repos** in the left sidebar.
-2. Click **Add Repo**.
-3. **Git repository URL:** Paste the HTTPS clone URL of this Azure DevOps repository. (You can get this URL by going to Repos > Files in Azure DevOps, clicking the "Clone" button, and copying the HTTPS URL).
-4. **Git provider:** Azure DevOps (should be pre-selected).
-5. Click **Create Repo.**
-6. You should now see the repository's file structure (including `ADB/`, `ADF_Templates/`, etc.) within your Databricks workspace.
+# Requisitos
 
+Para executar ou implantar a solução são necessários, dependendo do componente utilizado:
 
-### 3. Executing the Data Pipeline (Azure Data Factory)
+- Uma assinatura Azure com permissões para gerenciar recursos.;
+- Um workspace Azure Databricks provisionado e com o Unity Catalog habilitado;
+- Uma conta Azure Data Lake Storage Gen2;
+- Acesso às fontes de dados (SQL Server e APIs) utilizadas;
+- Power BI Desktop para trabalhar com os projetos `.pbip`.
 
-The entire end-to-end data workflow—from on-premises SQL ingestion to the final Lakehouse Gold layer—is centrally orchestrated by Azure Data Factory.
+Nota: Como os recursos Azure e suas credenciais não fazem parte do repositório, a execução completa depende da configuração e provisionamento da infraestrutura correspondente.
 
-To run the project in your environment:
-1. Open your **Azure Data Factory Studio**.
-2. Navigate to the **Author** tab (pencil icon) on the left sidebar.
-3. Under the **Pipelines** section, locate and open the master pipeline named `ETLMasterPipeline`.
-4. To run the process manually, click on **Add trigger** at the top menu of the pipeline canvas and select **Trigger now**. Click **OK** to confirm the run parameters.
-5. To monitor the execution, go to the **Monitor** tab on the left sidebar. Here you can track the step-by-step progress of the SQL data ingestion, the Databricks Medallion processing (Bronze, Silver, Gold), and the governance logs.
-6. Alternatively, the pipeline is configured with a `ScheduleTrigger` to run automatically every day at 00:01. Ensure the trigger is activated in the **Manage** tab if you want automated daily runs.
+A pasta `ADF/` contém as definições de infraestrutura e configuração do Azure Data Factory em formato JSON (datasets, linked services, pipelines e triggers). Os scripts Python da pasta `ADB/` devem ser sincronizados/clonados no ambiente Azure Databricks correspondente (via Databricks Repos/Git Folders).
 
-Once the `ETLMasterPipeline` succeeds, the processed data and ML models will be fully updated in the Databricks Lakehouse, ready to be consumed by the dashboards and ML endpoints and the Streamlit App!
+---
+
+# Objetivo do projeto
+
+Este projeto foi desenvolvido como uma demonstração de uma plataforma moderna de dados, mostrando como diferentes componentes de um ecossistema cloud podem ser integrados para construir um fluxo completo:
+
+Ingestão → Armazenamento → Processamento → Modelagem → Governança → BI → Machine Learning → GenAI
+
+O foco não está apenas na transformação dos dados, mas na construção de uma arquitetura que permita que os mesmos dados sejam utilizados por diferentes consumidores e casos de uso de negócio.
